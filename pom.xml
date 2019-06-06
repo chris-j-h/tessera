@@ -20,7 +20,7 @@
         <url>https://github.com/chris-j-h/tessera</url>
         <connection>scm:git:https://github.com/chris-j-h/tessera.git</connection>
         <developerConnection>scm:git:https://github.com/chris-j-h/tessera.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>release-0.10-SNAPSHOT</tag>
     </scm>
 
     <description>Tessera is a stateless Java system that is used to enable the encryption, decryption, and distribution
@@ -391,11 +391,11 @@
                                 <requireMavenVersion>
                                     <version>3.5</version>
                                 </requireMavenVersion>
-                                <banDuplicatePomDependencyVersions/>
+                                <banDuplicatePomDependencyVersions />
                                 <!--
-                                    <reactorModuleConvergence/>
+                                    <reactorModuleConvergence />
                                 -->
-                                <dependencyConvergence/>
+                                <dependencyConvergence />
 
                                 <banVulnerable implementation="org.sonatype.ossindex.maven.enforcer.BanVulnerableDependencies">
                                     <excludeVulnerabilityIds>
@@ -414,7 +414,7 @@
                                     </ignoreClasses>
                                 </banDuplicateClasses>
 
-                                <banCircularDependencies/>
+                                <banCircularDependencies />
                             </rules>
                         </configuration>
                     </execution>
@@ -1659,7 +1659,7 @@
             <!--<id>ossrh</id>-->
             <!--<url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
         <!--</snapshotRepository>-->
-<!---->
+
         <!--<repository>-->
             <!--<id>ossrh</id>-->
             <!--<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
