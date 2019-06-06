@@ -10,16 +10,16 @@
     <name>tessera</name>
     <packaging>pom</packaging>
 
-    <url>https://github.com/jpmorganchase/tessera</url>
+    <url>https://github.com/chris-j-h/tessera</url>
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/jpmorganchase/tessera/issues</url>
+        <url>https://github.com/chris-j-h/tessera/issues</url>
     </issueManagement>
 
     <scm>
-        <url>https://github.com/jpmorganchase/tessera</url>
-        <connection>scm:git:https://github.com/jpmorganchase/tessera.git</connection>
-        <developerConnection>scm:git:https://github.com/jpmorganchase/tessera.git</developerConnection>
+        <url>https://github.com/chris-j-h/tessera</url>
+        <connection>scm:git:https://github.com/chris-j-h/tessera.git</connection>
+        <developerConnection>scm:git:https://github.com/chris-j-h/tessera.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
@@ -28,7 +28,7 @@
     </description>
 
     <ciManagement>
-        <url>https://travis-ci.com/jpmorganchase/tessera</url>
+        <url>https://travis-ci.org/chris-j-h/tessera</url>
     </ciManagement>
 
     <licenses>
@@ -1649,21 +1649,21 @@
 
     <distributionManagement>
 
-        <site>
-            <id>tessera-github-pages</id>
-            <name>Quorum GitHub Pages</name>
-            <url>git:gh-pages://git@github.com:jpmorganchase/tessera.git</url>
-        </site>
+        <!--<site>-->
+            <!--<id>tessera-github-pages</id>-->
+            <!--<name>Quorum GitHub Pages</name>-->
+            <!--<url>git:gh-pages://git@github.com:jpmorganchase/tessera.git</url>-->
+        <!--</site>-->
 
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
+        <!--<snapshotRepository>-->
+            <!--<id>ossrh</id>-->
+            <!--<url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+        <!--</snapshotRepository>-->
+<!---->
+        <!--<repository>-->
+            <!--<id>ossrh</id>-->
+            <!--<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
+        <!--</repository>-->
 
 
     </distributionManagement>
