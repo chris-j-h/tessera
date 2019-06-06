@@ -20,7 +20,7 @@
         <url>https://github.com/chris-j-h/tessera</url>
         <connection>scm:git:https://github.com/chris-j-h/tessera.git</connection>
         <developerConnection>scm:git:https://github.com/chris-j-h/tessera.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>release-0.11-SNAPSHOT</tag>
     </scm>
 
     <description>Tessera is a stateless Java system that is used to enable the encryption, decryption, and distribution
