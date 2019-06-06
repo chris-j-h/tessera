@@ -6,6 +6,7 @@ env:
 
 install: true
 
+# TODO investigate using build stages instead of matrix
 matrix:
   include:
     - if: type = pull_request
