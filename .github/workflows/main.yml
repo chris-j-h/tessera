@@ -139,6 +139,8 @@ jobs:
           build_args: JAR_FILE=tessera-dist/tessera-app/target/*-app.jar
       - run:
           docker run --rm --network host -v /var/run/docker.sock:/var/run/docker.sock -v /tmp/acctests:/tmp/acctests quorumengineering/acctests:latest test -Pauto -Dtags="basic || basic-istanbul || networks/typical::istanbul" -Dauto.outputDir=/tmp/acctests -Dnetwork.forceDestroy=true
+      - run:
+          docker run --rm --network host -v /var/run/docker.sock:/var/run/docker.sock -v /tmp/acctests-raft:/tmp/acctests-raft quorumengineering/acctests:latest test -Pauto -Dtags="basic || basic-raft || networks/typical::raft" -Dauto.outputDir=/tmp/acctests-raft -Dnetwork.forceDestroy=true
       - uses: homoluctus/slatify@v2.1.2
         if: failure()
         with:
