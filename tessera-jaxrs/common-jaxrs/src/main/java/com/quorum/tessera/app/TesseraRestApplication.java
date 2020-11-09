@@ -1,6 +1,5 @@
 package com.quorum.tessera.app;
 
-import com.quorum.tessera.api.common.ApiResource;
 import com.quorum.tessera.api.common.BaseResource;
 import com.quorum.tessera.api.common.UpCheckResource;
 import com.quorum.tessera.api.common.VersionResource;
@@ -32,9 +31,10 @@ public abstract class TesseraRestApplication extends Application implements Tess
                 NodeOfflineExceptionMapper.class,
                 UpCheckResource.class,
                 VersionResource.class,
-                ApiResource.class,
                 BaseResource.class);
     }
+
+    // TODO(cjh) return full swagger doc by default in case specific ApiResource method for that server hasn't been added
 
     @Override
     public CommunicationType getCommunicationType() {
