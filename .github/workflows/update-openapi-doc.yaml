@@ -1,16 +1,16 @@
 name: Update OpenAPI Document
 on:
-  repository_dispatch:
-    types: [jaxrs-files-updated]
+  push:
+    branches:
+      - master
+    paths:
+      - 'tessera-jaxrs/**'
 env:
   TESSERA_DIR: tessera
-  DOC_DIR: doc.tessera
+  DOC_DIR: gh-pages
   DOC_REF: refs/heads/gh-pages
   DOC_OPENAPI_PATH: tessera_rest_openapi3_spec.latest.yaml
-  TESSERA_REPO: ${{ github.event.client_payload.repo }}
-  TESSERA_REF: ${{ github.event.client_payload.ref }}
-  TESSERA_SHA: ${{ github.event.client_payload.sha }}
-  TESSERA_OPENAPI_PATH: ${{ github.event.client_payload.openapi-path }}
+  TESSERA_OPENAPI_PATH: tessera-jaxrs/generate-openapi/build/generated-resources/openapi/openapi.yaml
 jobs:
   run:
     name: Check for updates and raise PR
@@ -25,12 +25,9 @@ jobs:
         with:
           ref: ${{ env.DOC_REF }}
           path: ${{ env.DOC_DIR }}
-      - name: Checkout Tesssera
+      - name: Checkout master
         uses: actions/checkout@v2
         with:
-          repository: ${{ env.TESSERA_REPO }}
-          ref: ${{ env.TESSERA_REF }}
-          token: ${{ secrets.QUORUMBOT_PAT }}
           path: ${{ env.TESSERA_DIR }}
       - name: Grant execute permission for gradlew
         working-directory: ${{ env.TESSERA_DIR }}
@@ -51,10 +48,10 @@ jobs:
           branch: automated-openapi-update
           delete-branch: true
           title: Automated openapi doc update
-          body: Automated update of openapi documentation triggered by repo=${{ env.TESSERA_REPO }} ref=${{ env.TESSERA_REF }} sha=${{ env.TESSERA_SHA }}
+          body: Automated update of openapi documentation triggered by ref=${{ github.ref }} sha=${{ github.sha }}
       - name: Summary
         run: |
-          echo "Triggered by ${{ env.TESSERA_REPO }} ${{ env.TESSERA_REF }} ${{ env.TESSERA_SHA }}"
+          echo "Triggered by ${{ github.ref }} ${{ github.sha }}"
           echo "Created PR ${{ steps.pr.outputs.pull-request-url }}"
 
 
