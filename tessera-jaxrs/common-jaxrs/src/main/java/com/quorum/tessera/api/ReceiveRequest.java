@@ -23,7 +23,6 @@ public class ReceiveRequest {
                     "(optional) public key of recipient of the encrypted payload; used in decryption; if not provided, decryption is attempted with all known recipient keys in turn",
             format = "base64")
     @Size(min = 1)
-    @NotNull
     private String to;
 
     @Schema(
