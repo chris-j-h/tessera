@@ -1,10 +1,12 @@
 package com.quorum.tessera.q2t;
 
 import com.quorum.tessera.api.common.RawTransactionResource;
+import com.quorum.tessera.api.common.UpCheckResource;
 import com.quorum.tessera.app.TesseraRestApplication;
 import com.quorum.tessera.config.AppType;
 import com.quorum.tessera.config.Config;
 import com.quorum.tessera.service.locator.ServiceLocator;
+import com.quorum.tessera.transaction.EncodedPayloadManager;
 import com.quorum.tessera.transaction.TransactionManager;
 import com.quorum.tessera.transaction.TransactionManagerFactory;
 import io.swagger.annotations.Api;
@@ -40,13 +42,16 @@ public class Q2TRestApp extends TesseraRestApplication {
                         .findAny()
                         .get();
 
-        TransactionManagerFactory transactionManagerFactory = TransactionManagerFactory.create();
+        TransactionManager transactionManager = TransactionManagerFactory.create().create(config);
+        EncodedPayloadManager encodedPayloadManager = EncodedPayloadManager.create(config);
 
-        TransactionManager transactionManager = transactionManagerFactory.create(config);
         TransactionResource transactionResource = new TransactionResource(transactionManager);
         RawTransactionResource rawTransactionResource = new RawTransactionResource(transactionManager);
+        EncodedPayloadResource encodedPayloadResource
+            = new EncodedPayloadResource(encodedPayloadManager, transactionManager);
+        final UpCheckResource upCheckResource = new UpCheckResource(transactionManager);
 
-        return Set.of(transactionResource, rawTransactionResource);
+        return Set.of(transactionResource, rawTransactionResource, encodedPayloadResource, upCheckResource);
     }
 
     @Override

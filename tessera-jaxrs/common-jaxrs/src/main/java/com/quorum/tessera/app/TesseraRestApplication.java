@@ -2,7 +2,6 @@ package com.quorum.tessera.app;
 
 import com.quorum.tessera.api.common.ApiResource;
 import com.quorum.tessera.api.common.BaseResource;
-import com.quorum.tessera.api.common.UpCheckResource;
 import com.quorum.tessera.api.common.VersionResource;
 import com.quorum.tessera.api.exception.*;
 import com.quorum.tessera.config.CommunicationType;
@@ -18,6 +17,8 @@ public abstract class TesseraRestApplication extends Application implements Tess
     @Override
     public Set<Class<?>> getClasses() {
         return Set.of(
+                EnhancedPrivacyNotSupportedExceptionMapper.class,
+                PrivacyViolationExceptionMapper.class,
                 AutoDiscoveryDisabledExceptionMapper.class,
                 DecodingExceptionMapper.class,
                 DefaultExceptionMapper.class,
@@ -28,7 +29,7 @@ public abstract class TesseraRestApplication extends Application implements Tess
                 SecurityExceptionMapper.class,
                 TransactionNotFoundExceptionMapper.class,
                 WebApplicationExceptionMapper.class,
-                UpCheckResource.class,
+                NodeOfflineExceptionMapper.class,
                 VersionResource.class,
                 ApiResource.class,
                 BaseResource.class);
