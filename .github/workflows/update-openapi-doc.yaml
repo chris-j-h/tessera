@@ -38,7 +38,7 @@ jobs:
       - name: Copy OpenAPI document to ${{ env.DOC_DIR }}
         run: |
           cp ${{ env.TESSERA_DIR }}/${{ env.TESSERA_OPENAPI_PATH }} ${{ env.DOC_DIR }}/${{ env.DOC_OPENAPI_PATH }}
-      - name: Raise PR if changes
+      - name: Raise PR if any changes
         id: pr
         uses: peter-evans/create-pull-request@v3
         with:
