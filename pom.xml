@@ -10,16 +10,16 @@
     <name>tessera</name>
     <packaging>pom</packaging>
 
-    <url>https://github.com/ConsenSys/tessera</url>
+    <url>https://github.com/chris-j-h/tessera</url>
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/ConsenSys/tessera/issues</url>
+        <url>https://github.com/chris-j-h/tessera/issues</url>
     </issueManagement>
 
     <scm>
-        <url>https://github.com/ConsenSys/tessera</url>
-        <connection>scm:git:https://github.com/ConsenSys/tessera.git</connection>
-        <developerConnection>scm:git:https://github.com/ConsenSys/tessera.git</developerConnection>
+        <url>https://github.com/chris-j-h/tessera</url>
+        <connection>scm:git:https://github.com/chris-j-h/tessera.git</connection>
+        <developerConnection>scm:git:https://github.com/chris-j-h/tessera.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
@@ -28,7 +28,7 @@
     </description>
 
     <ciManagement>
-        <url>https://github.com/ConsenSys/tessera/actions</url>
+        <url>https://github.com/ConsenSys/chris-j-h/actions</url>
     </ciManagement>
 
     <licenses>
