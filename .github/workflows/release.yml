@@ -32,10 +32,12 @@ jobs:
       - name: Determine tag name
         id: tag
         run: |
-          DIST=$(ls tessera-dist/tessera-app/target/tessera-app-*-app.jar)
-          echo $DIST
-          echo ::set-output name=full-ver::$(echo $DIST | sed -e 's/^.*tessera-app-\(.*\)-app.jar$/\1/g')
-          echo ::set-output name=minor-ver::$(echo $DIST | sed -e 's/^.*tessera-app-\([[:digit:]]*\.[[:digit:]]*\).*-app.jar$/\1/g')
+          DIST=$(ls release-checkout/tessera-dist/tessera-app/target/tessera-app-*-app.jar)
+          FULL_VER=$(echo $DIST | sed -e 's/^.*tessera-app-\(.*\)-app.jar$/\1/g')
+          MINOR_VER=$(echo $DIST | sed -e 's/^.*tessera-app-\([[:digit:]]*\.[[:digit:]]*\).*-app.jar$/\1/g')
+          echo $DIST $FULL_VER $MINOR_VER
+          echo ::set-output name=full-ver::$FULL_VER
+          echo ::set-output name=minor-ver::$MINOR_VER
       - name: Push Docker image
         uses: docker/build-push-action@v1
         with:
@@ -45,5 +47,5 @@ jobs:
           tags: ${{ steps.tag.outputs.full-ver }}, ${{ steps.tag.outputs.minor-ver }}
           add_git_labels: true
           dockerfile: release-checkout/.github/workflows/noBuild.Dockerfile
-          path: release-checkout/tessera-dist/tessera-app/targe`t
+          path: release-checkout/tessera-dist/tessera-app/target
           build_args: JAR_FILE=tessera-app-${{ steps.tag.outputs.full-ver }}-app.jar
