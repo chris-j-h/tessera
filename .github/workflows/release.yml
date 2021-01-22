@@ -23,12 +23,12 @@ jobs:
           mvn --settings .maven.xml release:prepare -DskipTests -Darguments="-DskipTests"
       - name: Release Perform
         run: |
-          mvn --settings .maven.xml -DskipTests -Darguments="-DskipTests -Dmaven.deploy.skip=true -Dgpg.skip=true" -DworkingDirectory=${GITHUB_WORKSPACE}/release-checkout release:perform
+          mvn --settings .maven.xml -DskipTests -Darguments="-DskipTests -Dmaven.deploy.skip=true -Dgpg.skip=true" -DworkingDirectory=release-checkout release:perform
       - name: Save tessera-app.jar
         uses: actions/upload-artifact@v2
         with:
           name: tessera-app
-          path: ${GITHUB_WORKSPACE}/release-checkout/tessera-dist/tessera-app/target/tessera-app-*-app.jar
+          path: release-checkout/tessera-dist/tessera-app/target/tessera-app-*-app.jar
       - name: Determine tag name
         id: tag
         run: |
@@ -42,6 +42,6 @@ jobs:
           repository: ${{ secrets.DOCKER_REPO }}
           tags: ${{ steps.tag.outputs.full-ver }}, ${{ steps.tag.outputs.minor-ver }}
           add_git_labels: true
-          dockerfile: ${GITHUB_WORKSPACE}/release-checkout/.github/workflows/noBuild.Dockerfile
-          path: ${GITHUB_WORKSPACE}/release-checkout/tessera-dist/tessera-app/target
+          dockerfile: release-checkout/.github/workflows/noBuild.Dockerfile
+          path: release-checkout/tessera-dist/tessera-app/targe`t
           build_args: JAR_FILE=tessera-app-${{ steps.tag.outputs.full-ver }}-app.jar
