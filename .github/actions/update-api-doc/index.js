@@ -100,16 +100,6 @@ function getConfig() {
   return {
     spec: calculateSpecDetails(specsSource),
     distDir: ghPagesBranch,
-    // ghPagesConfig: {
-    //   add: true, // allows gh-pages module to keep remote files
-    //   branch: branch,
-    //   repo: repo.href,
-    //   user: {
-    //     name: gitUserName,
-    //     email: gitEmail,
-    //   },
-    //   message: `[skip ci] OpenAPI Publish [${specs[0].version}]`,
-    // },
   };
 }
 

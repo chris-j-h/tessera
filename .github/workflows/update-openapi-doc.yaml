@@ -44,7 +44,6 @@ jobs:
         with:
           specs-source: ${{ env.GENERERATED_SPEC }}
           gh-pages-branch: ${{ env.GHPAGES_DIR }}
-          spec-target-prefix: 'tessera'
           dev-branch: 'gh-action-api'
 
       - name: Log generated changes

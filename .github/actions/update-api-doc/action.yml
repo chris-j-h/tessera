@@ -19,7 +19,7 @@ inputs:
   spec-target-prefix:
     description: 'target spec file prefix'
     required: true
-    default: 'openapi'
+    default: 'tessera_rest_openapi3_spec'
 runs:
   using: 'node12'
   main: 'index.js'
