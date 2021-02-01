@@ -27,13 +27,12 @@ jobs:
           ref: ${{ env.GHPAGES_REF }}
           path: ${{ env.GHPAGES_DIR }}
 
-      # TODO add download-artifact action from build workflow
-      # TODO remove ./.github/actions/update-api-doc/generated-resources folder used here for testing
-      - name: FAKE artifact DL
-        run: |
-          mkdir -p ./tessera-jaxrs/generate-openapi/build
-          mv ./.github/actions/update-api-doc/generated-resources ./tessera-jaxrs/generate-openapi/build/
-      # END of fake step
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Generate OpenAPI document
+        run: ./gradlew -Dorg.gradle.jvmargs=-Xmx4096m generateOpenApiDoc
 
       - name: Install dependencies
         run: |
@@ -48,7 +47,7 @@ jobs:
           spec-target-prefix: 'tessera'
           dev-branch: 'gh-action-api'
 
-      - name: Display generated changes # TODO remove it's debug
+      - name: Log generated changes
         run: |
           echo "::group::gh-pages dist dir"
           ls -la ${{ env.GHPAGES_DIR }}
@@ -68,4 +67,3 @@ jobs:
           FOLDER: ${{ env.GHPAGES_DIR }} # The folder the action should deploy.
           CLEAN: false
           PRESERVE: true
-          COMMIT_MESSAGE: "Automated update of openapi documentation triggered by ref=${{ github.ref }} sha=${{ github.sha }}"
