@@ -135,7 +135,7 @@ function isReleaseVersion(version) {
 
 function destinationPath(specFile, version) {
   const extension = path.extname(specFile);
-  return path.join(ghPagesBranch, `${specTargetPrefix}-${version}${extension}`);
+  return path.join(ghPagesBranch, `${specTargetPrefix}.${version}${extension}`);
 }
 
 main();
