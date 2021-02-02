@@ -1,3 +1,14 @@
 {
-    "latest":{"spec":"latest","source":"master"}
+ "latest": {
+  "spec": "latest",
+  "source": "master"
+ },
+ "tessera-v21.1.4.ApiDocTest": {
+  "spec": "tessera-v21.1.4.ApiDocTest",
+  "source": "tessera-v21.1.4.ApiDocTest"
+ },
+ "stable": {
+  "spec": "tessera-v21.1.4.ApiDocTest",
+  "source": "tessera-v21.1.4.ApiDocTest"
+ }
 }
