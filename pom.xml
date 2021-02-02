@@ -1485,7 +1485,6 @@
 
                     <includeFilterFile>${session.executionRootDirectory}/spotbugs-include.xml</includeFilterFile>
                     <excludeFilterFile>${session.executionRootDirectory}/spotbugs-exclude.xml</excludeFilterFile>
-
                     <plugins>
                         <plugin>
                             <groupId>com.h3xstream.findsecbugs</groupId>
