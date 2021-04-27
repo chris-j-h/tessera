@@ -50,11 +50,6 @@ jobs:
           restore-keys: |
             ${{env.MAVEN_REPO_CACHE_KEY}}
       - run: mvn package -pl \!tests/acceptance-test
-      - uses: codecov/codecov-action@v1
-        with:
-          token: ${{secrets.CODECOV_TOKEN}}
-          flags: unittests
-          fail_ci_if_error: true
       - uses: homoluctus/slatify@v2.1.2
         if: failure()
         with:
