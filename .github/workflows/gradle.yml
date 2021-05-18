@@ -215,7 +215,7 @@ jobs:
           echo "using version $VERSION"
           echo ::set-output name=version::$VERSION
       - run:
-          docker run --rm --network host -v /var/run/docker.sock:/var/run/docker.sock -v /tmp/acctests:/tmp/acctests -e TF_VAR_quorum_docker_image='{name="quorumengineering/quorum:develop",local=false}' quorumengineering/acctests:latest test -Pauto -Dtags="!async && (basic || basic-istanbul || networks/typical::istanbul)" -Dauto.outputDir=/tmp/acctests -Dnetwork.forceDestroy=true
+          docker run --rm --network host -v /var/run/docker.sock:/var/run/docker.sock -v /tmp/acctests:/tmp/acctests -e TF_VAR_quorum_docker_image='{name="quorumengineering/quorum:${{ steps.quorumver.outputs.version }}",local=false}' quorumengineering/acctests:latest test -Pauto -Dtags="!async && (basic || basic-istanbul || networks/typical::istanbul)" -Dauto.outputDir=/tmp/acctests -Dnetwork.forceDestroy=true
 
 #  vaultTests:
 #    runs-on: ubuntu-latest
