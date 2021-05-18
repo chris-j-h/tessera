@@ -14,14 +14,6 @@ env:
   GPG_SECRET_KEYS: ${{ secrets.GPG_SECRET_KEYS }}
 
 jobs:
-#  checkdependencies:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v2
-#      - uses: actions/setup-java@v1
-#        with:
-#          java-version: 11
-#      - run: ./gradlew dependencyCheckAnalyze -x test
   release:
     runs-on: ubuntu-latest
     steps:
@@ -41,17 +33,10 @@ jobs:
           echo "$tagversion" > version.txt
           git add version.txt
           git commit -m "Change to release version $tagversion"
-#          git tag -a $tagname -m "Release tessera $tagversion"
-#          git push --tags
 
-#          echo "${GPG_SECRET_KEYS}" | base64 --decode | gpg --import --no-tty --batch --yes
-#          echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust
-#          pubkey=`gpg --list-keys -a info@goquorum.com|head -2|tail -1|xargs`
-#          ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository -PsonatypeUsername=$SONATYPE_USERNAME -PsonatypePassword=$SONATYPE_PASSWORD -Psigning.gnupg.keyName=$pubkey --info
           ./gradlew incrementProjectVersion --info
           git add version.txt
           git commit -m "Change version to next development version"
-#          git push --set-upstream origin release-$now
 
           minor_version=${tagversion%.*}
           echo ::set-output name=full-ver::$tagversion
@@ -64,19 +49,3 @@ jobs:
           base: master
           title: Update development version
           body: Triggered by release https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-#      - name: Save tessera-app.jar
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: tessera-app
-#          path: tessera-dist/tessera-app/build/libs/tessera-app-*-app.jar
-#      - name: Push Docker image
-#        uses: docker/build-push-action@v1
-#        with:
-#          username: ${{ secrets.DOCKER_USERNAME }}
-#          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-#          repository: ${{ secrets.DOCKER_REPO }}
-#          tags: ${{ steps.release.outputs.full-ver }}, ${{ steps.release.outputs.minor-ver }}, latest
-#          add_git_labels: true
-#          dockerfile: .github/workflows/noBuild.Dockerfile
-#          path: tessera-dist/tessera-app/build/libs
-#          build_args: JAR_FILE=tessera-app-${{ steps.release.outputs.full-ver }}-app.jar
