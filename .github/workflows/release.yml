@@ -32,6 +32,8 @@ jobs:
           echo "$tagversion" > version.txt
           git add version.txt
           git commit -m "Change to release version $tagversion"
+          git tag -a $tagname -m "Release tessera $tagversion"
+          git push --tags
 
           ./gradlew incrementProjectVersion --info
           git add version.txt
