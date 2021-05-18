@@ -27,7 +27,6 @@ jobs:
         run: |
           git config user.name "quorumbot"
           now=`date +%Y%m%d%H%M%S`
-          git checkout -b "release-$now"
           tagversion=`cat version.txt | cut -d'-' -f1`
           tagname="tessera-$tagversion"
           echo "$tagversion" > version.txt
@@ -46,6 +45,5 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           branch: ${{ steps.release.outputs.branch-name }}
-          base: master
           title: Update development version
           body: Triggered by release https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
