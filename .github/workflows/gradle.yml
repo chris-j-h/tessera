@@ -431,7 +431,7 @@ jobs:
       - name: Build image as tar
         uses: docker/build-push-action@v2
         with:
-          tags: quorumengineering/tessera:develop
+          tags: chounsom/tessera:develop
           push: false
           file: .github/workflows/noBuild.Dockerfile
           context: /home/runner/work/tessera/tessera/tessera-dist/build/distributions/
@@ -501,7 +501,7 @@ jobs:
 
   push_docker_develop:
     name: Push develop image to DockerHub
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/full_jigssaw_dist' }}
     # arguably we should depend on all test steps, but this job only runs on pushes to master so all tests will have
     # already passed in the PR. At a minimum we depend on atest as it actually uses the image.
     needs: [build_image, atest]
@@ -523,4 +523,4 @@ jobs:
           password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
       - name: Push image
         run : |
-          docker push quorumengineering/tessera:develop
+          docker push chounsom/tessera:develop
