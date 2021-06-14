@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - full_jigssaw_dist
   pull_request:
     branches: ['*']
   
