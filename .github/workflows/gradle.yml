@@ -424,6 +424,8 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code from SCM
+        uses: actions/checkout@v2
       - name: Download tessera dist
         uses: actions/download-artifact@v2
         with:
@@ -436,7 +438,7 @@ jobs:
         with:
           tags: chounsom/tessera:develop
           push: false
-          file: /home/runner/work/tessera/.github/workflows/noBuild.Dockerfile
+          file: .github/workflows/noBuild.Dockerfile
           context: /home/runner/work/tessera/tessera/tessera-dist/build/distributions/
           outputs: type=docker,dest=/tmp/tessera-develop-image.tar
       - name: Upload artifact
