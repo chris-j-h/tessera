@@ -1,5 +1,16 @@
 plugins {
   id "java-library"
+  id "application"
+}
+
+// The kalium encryptor provides an example CUSTOM encryptor implementation.
+// Create a simple dist that doesn't include the clashing com.github.jnr:jnr-ffi dependency so that kalium support can
+// easily be added to the tessera dist.
+application {
+  startScripts.enabled = false
+}
+configurations.all {
+  exclude group: "com.github.jnr", module: "jnr-ffi"
 }
 
 dependencies {
