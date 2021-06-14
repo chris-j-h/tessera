@@ -418,9 +418,33 @@ jobs:
           job_name: Recovery integration tests
           url: ${{ secrets.SLACK_WEBHOOK }}
 
-  atest:
-    name: Quorum acceptence tests
+  build_image:
+    name: Build develop Docker image
     needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download tessera dist
+        uses: actions/download-artifact@v2
+        with:
+          name: tessera-dists
+          path: /home/runner/work/tessera/tessera/tessera-dist/build/distributions/
+      - name: Build image as tar
+        uses: docker/build-push-action@v2
+        with:
+          tags: quorumengineering/tessera:develop
+          push: false
+          file: .github/workflows/noBuild.Dockerfile
+          context: /home/runner/work/tessera/tessera/tessera-dist/build/distributions/
+          outputs: type=docker,dest=/tmp/tessera-develop-image.tar
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: tessera-develop-image
+          path: /tmp/tessera-develop-image.tar
+
+  atest:
+    name: Quorum acceptance tests
+    needs: [build, build_image]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code from SCM
@@ -436,14 +460,15 @@ jobs:
         with:
           name: tessera-dists
           path: /home/runner/work/tessera/tessera/tessera-dist/build/distributions/
-      - name: Build Tessera docker image
-        uses: docker/build-push-action@v1
+      - name: Download image artifact
+        uses: actions/download-artifact@v2
         with:
-          repository: quorumengineering/tessera
-          tags: develop
-          push: false
-          dockerfile: .github/workflows/noBuild.Dockerfile
-          path: /home/runner/work/tessera/tessera/tessera-dist/build/distributions/
+          name: tessera-develop-image
+          path: /tmp/tessera-develop-image.tar
+      - name: Load image
+        run: |
+          docker load --input /tmp/tessera-develop-image.tar
+          docker image ls -a
       - name: Get version of Quorum to use
         id: quorumver
         run: |
@@ -457,7 +482,7 @@ jobs:
           fi
           echo "using version $VERSION"
           echo ::set-output name=version::$VERSION
-      - name: Execute acceptence tests
+      - name: Execute acceptance tests
         run:
           docker run --entrypoint /bin/sh --network host -v /tmp/run/sh:/tmp/run.sh -v /var/run/docker.sock:/var/run/docker.sock -v /tmp/acctests:/tmp/acctests -e TF_VAR_quorum_docker_image='{name="quorumengineering/quorum:${{ steps.quorumver.outputs.version }}",local=false}' quorumengineering/acctests:latest -c "mvn --no-transfer-progress -B -DskipToolsCheck test -Pauto -Dtags='\!async && (basic || basic-istanbul || networks/typical::istanbul)' -Dauto.outputDir=/tmp/acctests -Dnetwork.forceDestroy=true && cp -R /workspace/target/gauge /tmp/acctests/gauge && chmod -R 775 /tmp/acctests/gauge"
       - name: Upload Gauge report
@@ -471,5 +496,31 @@ jobs:
         if: always()
         with:
           type: ${{job.status}}
-          job_name: Quorum acceptence tests
+          job_name: Quorum acceptance tests
           url: ${{ secrets.SLACK_WEBHOOK }}
+
+  push_docker_develop:
+    name: Push develop image to DockerHub
+    if: ${{ github.ref == 'refs/heads/master' }}
+    # arguably we should depend on all test steps, but this job only runs on pushes to master so all tests will have
+    # already passed in the PR. At a minimum we depend on atest as it actually uses the image.
+    needs: [build_image, atest]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download image artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: tessera-develop-image
+          path: /tmp/tessera-develop-image.tar
+      - name: Load image
+        run: |
+          docker load --input /tmp/tessera-develop-image.tar
+          docker image ls -a
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+      - name: Push image
+        run : |
+          docker push quorumengineering/tessera:develop
