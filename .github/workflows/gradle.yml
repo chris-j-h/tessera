@@ -460,16 +460,13 @@ jobs:
           distribution: 'adopt'
           java-version: 14
           check-latest: true
-      - name: Download tessera dist
-        uses: actions/download-artifact@v2
-        with:
-          name: tessera-dists
-          path: /home/runner/work/tessera/tessera/tessera-dist/build/distributions/
       - name: Download image artifact
         uses: actions/download-artifact@v2
         with:
           name: tessera-develop-image
           path: /tmp/tessera-develop-image.tar
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
       - name: Load image
         run: |
           docker load --input /tmp/tessera-develop-image.tar
@@ -517,6 +514,8 @@ jobs:
         with:
           name: tessera-develop-image
           path: /tmp/tessera-develop-image.tar
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
       - name: Load image
         run: |
           docker load --input /tmp/tessera-develop-image.tar
