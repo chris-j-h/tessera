@@ -506,7 +506,8 @@ jobs:
     if: ${{ github.ref == 'refs/heads/full_jigssaw_dist' }}
     # arguably we should depend on all test steps, but this job only runs on pushes to master so all tests will have
     # already passed in the PR. At a minimum we depend on atest as it actually uses the image.
-    needs: [build_image, atest]
+#    needs: [build_image, atest]
+    needs: [build_image]
     runs-on: ubuntu-latest
     steps:
       - name: Download image artifact
