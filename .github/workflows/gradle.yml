@@ -464,7 +464,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: tessera-develop-image
-          path: /tmp/tessera-develop-image.tar
+          path: /tmp
+      - name: ls
+        runs: |
+          ls -R /tmp
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Load image
