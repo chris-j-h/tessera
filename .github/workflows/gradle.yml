@@ -465,9 +465,6 @@ jobs:
         with:
           name: tessera-develop-image
           path: /tmp
-      - name: ls
-        run: |
-          ls -R /tmp
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Load image
