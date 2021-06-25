@@ -82,9 +82,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           tags: |
-            ${{ secrets.DOCKER_REPO }}/latest
-            ${{ secrets.DOCKER_REPO }}/${{needs.release_sonatype.outputs.minor-ver}}
-            ${{ secrets.DOCKER_REPO }}/${{needs.release_sonatype.outputs.full-ver}}
+            chounsom:tessera/latest
+            chounsom:tessera/${{needs.release_sonatype.outputs.minor-ver}}
+            chounsom:tessera/${{needs.release_sonatype.outputs.full-ver}}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
