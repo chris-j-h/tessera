@@ -40,6 +40,10 @@ jobs:
           ./gradlew build -x test
 
           minor_version=${tagversion%.*}
+
+          echo $tagversion
+          echo $minor_version
+
           echo ::set-output name=full-ver::$tagversion
           echo ::set-output name=minor-ver::$minor_version
           echo ::set-output name=branch-name::release-$now
@@ -70,14 +74,17 @@ jobs:
           password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
       - name: Get current date-time (RFC 3339 standard)
         id: date
-        run: echo "::set-output name=now::$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+        run: |
+          echo ${{needs.release_sonatype.outputs.full-ver}}
+          echo ${{needs.release_sonatype.outputs.minor-ver}}
+          echo "::set-output name=now::$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
       - name: Build and push images
         uses: docker/build-push-action@v2
         with:
           tags: |
             ${{ secrets.DOCKER_REPO }}/latest
-            ${{ secrets.DOCKER_REPO }}/${{needs.release.outputs.minor-ver}}
-            ${{ secrets.DOCKER_REPO }}/${{needs.release.outputs.full-ver}}
+            ${{ secrets.DOCKER_REPO }}/${{needs.release_sonatype.outputs.minor-ver}}
+            ${{ secrets.DOCKER_REPO }}/${{needs.release_sonatype.outputs.full-ver}}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
