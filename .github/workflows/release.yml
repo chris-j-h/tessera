@@ -14,7 +14,6 @@ env:
 
 jobs:
   release_sonatype:
-    needs: checkdependencies
     runs-on: ubuntu-latest
     outputs:
       full-ver: ${{ steps.release.outputs.full-ver }}
