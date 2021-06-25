@@ -21,7 +21,7 @@ jobs:
         with:
           java-version: 11
       - run: ./gradlew dependencyCheckAnalyze -x test
-  release:
+  release_sonatype:
     needs: checkdependencies
     runs-on: ubuntu-latest
     outputs:
@@ -60,8 +60,7 @@ jobs:
           path: /home/runner/work/tessera/tessera/tessera-dist/build/distributions/
 
   release_docker:
-    name: Build and release Docker images
-    needs: release
+    needs: release_sonatype
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code from SCM
