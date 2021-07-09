@@ -3,6 +3,9 @@ name: Tessera Release Build
 on:
   repository_dispatch:
     types: [release]
+  push:
+    branches:
+      - *
 
 env:
   SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
@@ -12,16 +15,16 @@ env:
   GPG_SECRET_KEYS: ${{ secrets.GPG_SECRET_KEYS }}
 
 jobs:
-  checkdependencies:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - run: ./gradlew dependencyCheckAnalyze -x test
+#  checkdependencies:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: actions/setup-java@v1
+#        with:
+#          java-version: 11
+#      - run: ./gradlew dependencyCheckAnalyze -x test
   release_sonatype:
-    needs: checkdependencies
+#    needs: checkdependencies
     runs-on: ubuntu-latest
     outputs:
       full-ver: ${{ steps.release.outputs.full-ver }}
@@ -40,29 +43,19 @@ jobs:
           tagversion=`cat version.txt | cut -d'-' -f1`
           tagname="tessera-$tagversion"
           echo "$tagversion" > version.txt
-          git add version.txt
-          git commit -m "Change to release version $tagversion"
-          git tag -a $tagname -m "Release tessera $tagversion"
-          git push --tags
 
-          echo "${GPG_SECRET_KEYS}" | base64 --decode | gpg --import --no-tty --batch --yes
-          echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust
-          pubkey=`gpg --list-keys -a info@goquorum.com|head -2|tail -1|xargs`
-          ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository -PsonatypeUsername=$SONATYPE_USERNAME -PsonatypePassword=$SONATYPE_PASSWORD -Psigning.gnupg.keyName=$pubkey --info
-          ./gradlew incrementProjectVersion --info
-          git add version.txt
-          git commit -m "Change version to next development version"
+          ./gradlew clean build -x test
 
           minor_version=${tagversion%.*}
           echo ::set-output name=full-ver::$tagversion
           echo ::set-output name=minor-ver::$minor_version
           echo ::set-output name=branch-name::release-$now
-      - name: Create PR to update development version
-        uses: peter-evans/create-pull-request@v3
-        with:
-          branch: ${{ steps.release.outputs.branch-name }}
-          title: Update development version
-          body: Triggered by release https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+#      - name: Create PR to update development version
+#        uses: peter-evans/create-pull-request@v3
+#        with:
+#          branch: ${{ steps.release.outputs.branch-name }}
+#          title: Update development version
+#          body: Triggered by release https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
       - name: Upload tessera dists
         uses: actions/upload-artifact@v2
         if: success()
