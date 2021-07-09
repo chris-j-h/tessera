@@ -5,7 +5,7 @@ on:
     types: [release]
   push:
     branches:
-      - *
+      - '*'
 
 env:
   SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
