@@ -73,9 +73,10 @@ public class SetupDatabase {
         .map(
             j -> {
               try {
-                LOGGER.info("{}", j.getUrl());
+                LOGGER.info("Connecting to {}", j.getUrl());
                 return DriverManager.getConnection(j.getUrl(), j.getUsername(), j.getPassword());
               } catch (SQLException ex) {
+                LOGGER.error("Unable to connect to " + j.getUrl(), ex);
                 throw new UncheckedSQLException(ex);
               }
             })
