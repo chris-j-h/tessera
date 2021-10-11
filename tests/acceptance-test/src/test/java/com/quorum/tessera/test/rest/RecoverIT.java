@@ -188,8 +188,11 @@ public class RecoverIT {
       // Drop database
       LOGGER.info("CHRISSY Dropping DB of node {}", nodeAlias);
       setupDatabase.drop(nodeAlias);
+      LOGGER.info("CHRISSY Dropped DB of node {}", nodeAlias);
 
+      LOGGER.info("CHRISSY Checking if autoCreateTables");
       if (!autoCreateTables) {
+        LOGGER.info("CHRISSY Not autoCreateTables");
         LOGGER.info(
             "CHRISSY node {} - checking recovery fails when autoCreateTables=false and no staging tables",
             nodeAlias);
@@ -207,6 +210,8 @@ public class RecoverIT {
 
         // Let's setup correctly
         setupDatabase.setUp(nodeAlias);
+      } else {
+        LOGGER.info("CHRISSY Is autoCreateTables");
       }
 
       // Should recover successfully
