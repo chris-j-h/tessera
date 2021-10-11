@@ -57,14 +57,14 @@ jobs:
       with:
         name: kalium-dist
         path: /home/runner/work/tessera/tessera/encryption/encryption-kalium/build/distributions/
-    - name: Send slack notification
-      uses: homoluctus/slatify@v3.0.0
-      if: always()
-      with:
-        type: ${{job.status}}
-        job_name: Build and upload binaries
-        url: ${{ secrets.SLACK_WEBHOOK }}
-
+#    - name: Send slack notification
+#      uses: homoluctus/slatify@v3.0.0
+#      if: always()
+#      with:
+#        type: ${{job.status}}
+#        job_name: Build and upload binaries
+#        url: ${{ secrets.SLACK_WEBHOOK }}
+#
 #  checkdependencies:
 #    name: Check dependencies for any security advisories
 #    runs-on: ubuntu-latest
@@ -439,13 +439,13 @@ jobs:
         with:
           name: recovery-itest-logs
           path: /home/runner/work/tessera/tessera/tests/acceptance-test/build/logs
-      - name: Send slack notification
-        uses: homoluctus/slatify@v3.0.0
-        if: always()
-        with:
-          type: ${{job.status}}
-          job_name: Recovery integration tests
-          url: ${{ secrets.SLACK_WEBHOOK }}
+#      - name: Send slack notification
+#        uses: homoluctus/slatify@v3.0.0
+#        if: always()
+#        with:
+#          type: ${{job.status}}
+#          job_name: Recovery integration tests
+#          url: ${{ secrets.SLACK_WEBHOOK }}
 
 #  build_image:
 #    name: Build develop Docker image
