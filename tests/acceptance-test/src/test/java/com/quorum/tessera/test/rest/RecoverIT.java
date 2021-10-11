@@ -69,7 +69,10 @@ public class RecoverIT {
 
   @Before
   public void startNetwork() throws Exception {
-    LOGGER.info("Starting network with parameters: DBType={}, autoCreateTables={}", dbType, autoCreateTables);
+    LOGGER.info(
+        "Starting network with parameters: DBType={}, autoCreateTables={}",
+        dbType,
+        autoCreateTables);
 
     final ExecutionContext executionContext =
         ExecutionContext.Builder.create()
