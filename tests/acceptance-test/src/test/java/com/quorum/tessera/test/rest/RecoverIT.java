@@ -104,12 +104,18 @@ public class RecoverIT {
             .map(NodeExecManager::new)
             .collect(Collectors.toMap(e -> e.getConfigDescriptor().getAlias(), e -> e));
 
+    LOGGER.info("CHRISSY Starting network, size = {}", this.executors.size());
     executors.values().forEach(ExecManager::start);
 
+    LOGGER.info("CHRISSY Waiting for all nodes to sync partyinfo");
     partyInfoSync();
+    LOGGER.info("CHRISSY All nodes have synced partyinfo");
 
+    LOGGER.info("CHRISSY Sending transactions");
     sendTransactions();
+    LOGGER.info("CHRISSY Transactions sent");
 
+    LOGGER.info("CHRISSY Verifying nodes received correct transactions");
     Arrays.stream(NodeAlias.values())
         .forEach(
             a -> {
@@ -174,15 +180,23 @@ public class RecoverIT {
     for (NodeAlias nodeAlias : aliases) {
 
       // Stop node
+      LOGGER.info("CHRISSY Stopping node {}", nodeAlias);
       ExecManager execManager = executors.get(nodeAlias);
       execManager.stop();
       // Drop database
+      LOGGER.info("CHRISSY Dropping DB of node {}", nodeAlias);
       setupDatabase.drop(nodeAlias);
 
       if (!autoCreateTables) {
+        LOGGER.info(
+            "CHRISSY node {} - checking recovery fails when autoCreateTables=false and no staging tables",
+            nodeAlias);
         recoverNodeShouldFail(nodeAlias); // as staging tables not existed
 
         setupDatabase.setUp(nodeAlias);
+        LOGGER.info(
+            "CHRISSY node {} - checking recovery fails when autoCreateTables=false and staging tables are not empty",
+            nodeAlias);
         insertBogusData(nodeAlias);
 
         recoverNodeShouldFail(nodeAlias); // as staging tables contain data
@@ -194,7 +208,9 @@ public class RecoverIT {
       }
 
       // Should recover successfully
+      LOGGER.info("CHRISSY recovering node {}", nodeAlias);
       recoverNode(nodeAlias);
+      LOGGER.info("CHRISSY node {} recovered and restarted in normal running mode", nodeAlias);
     }
   }
 
