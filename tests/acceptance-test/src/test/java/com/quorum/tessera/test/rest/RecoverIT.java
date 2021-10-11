@@ -135,6 +135,7 @@ public class RecoverIT {
 
   @After
   public void stopNetwork() throws Exception {
+    LOGGER.info("CHRISSY cleaning up");
     setupDatabase.dropAll();
     ExecutionContext.destroyContext();
     executors.values().forEach(ExecManager::stop);

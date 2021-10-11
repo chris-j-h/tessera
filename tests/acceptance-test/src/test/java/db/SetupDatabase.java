@@ -88,7 +88,7 @@ public class SetupDatabase {
   }
 
   public void drop(NodeAlias nodeAlias) throws SQLException {
-
+    LOGGER.info("CHRISSY enter SetupDatabase::drop");
     try (Connection connection = getConnection(nodeAlias)) {
       DatabaseMetaData metaData = connection.getMetaData();
       if (Objects.isNull(metaData)) {
@@ -96,22 +96,25 @@ public class SetupDatabase {
         return;
       }
       List<String> tableNames = new ArrayList<>();
+      LOGGER.info("CHRISSY getting table names");
       try (ResultSet rs = metaData.getTables(null, null, "%", null)) {
 
         while (rs.next()) {
           tableNames.add(rs.getString(3));
         }
       }
+      LOGGER.info("CHRISSY got table names, len={}", tableNames.size());
 
       String dropStatement = "DROP TABLE %s";
 
       try (Statement statement = connection.createStatement()) {
         for (String tableName : tableNames) {
           String line = String.format(dropStatement, tableName);
-          LOGGER.trace("Drop table SQL : {}", line);
+          LOGGER.info("Drop table SQL : {}", line);
           try {
             statement.execute(line);
           } catch (SQLException ex) {
+            LOGGER.error("Unable to drop table: {}", ex.toString());
           }
         }
       }
