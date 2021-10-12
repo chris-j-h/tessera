@@ -100,6 +100,21 @@ public class SetupDatabase {
       LOGGER.info("CHRISSY getting table names");
       try (ResultSet rs = metaData.getTables(null, null, "%", null)) {
 
+//        ResultSetMetaData metadata = rs.getMetaData();
+//        int columnCount = metadata.getColumnCount();
+//        for (int i = 1; i <= columnCount; i++) {
+//          System.out.print(metadata.getColumnName(i) + ", ");
+//        }
+//        System.out.println();
+//        while (rs.next()) {
+//          StringBuilder row = new StringBuilder();
+//          for (int i = 1; i <= columnCount; i++) {
+//            row.append(rs.getString(i)).append(", ");
+//          }
+//          System.out.println(row);
+//
+//        }
+
         while (rs.next()) {
           tableNames.add(rs.getString(3));
         }
@@ -107,6 +122,8 @@ public class SetupDatabase {
       LOGGER.info("CHRISSY got table names, len={}", tableNames.size());
 
       String dropStatement = "DROP TABLE %s";
+
+      tableNames = Arrays.asList("ENCRYPTED_RAW_TRANSACTION", "ENCRYPTED_TRANSACTION", "PRIVACY_GROUP", "ST_AFFECTED_TRANSACTION", "ST_TRANSACTION");
 
       try (Statement statement = connection.createStatement()) {
         for (String tableName : tableNames) {
