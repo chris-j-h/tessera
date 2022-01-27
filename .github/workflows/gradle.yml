@@ -446,11 +446,39 @@ jobs:
 #          job_name: Recovery integration tests
 #          url: ${{ secrets.SLACK_WEBHOOK }}
 
+#  get_docker_repo:
+#    name: Get the Docker repo name
+#    needs: [build]
+#    runs-on: ubuntu-latest
+#    outputs:
+#      docker-repo: ${{ steps.get.outputs.docker-repo }}
+#    steps:
+#      - name: Use secret or default
+#        id: get
+#        env:
+#          DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
+#        run: |
+#          # use a non-existant repo as a default value - allows us to build images for tests but protect against PRs
+#          # from forks (that don't have access to secrets) pushing to the official repo
+#          val="${DOCKER_REPO:-quorumtest}"
+#          echo $val
+#          echo "::set-output name=docker-repo::$val"
+
   build_image:
     name: Build develop Docker image
     needs: [build]
     runs-on: ubuntu-latest
     steps:
+      - name: Use secret or default
+        id: get_docker_repo
+        env:
+          DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
+        run: |
+          # use a non-existent repo as a default value - allows us to build images for tests but protect against PRs 
+          # from forks (that don't have access to secrets) pushing to the official repo 
+          val="${DOCKER_REPO:-quorumtest}"
+          echo $val
+          echo "::set-output name=docker-repo::$val"
       - name: Checkout code from SCM
         uses: actions/checkout@v2
       - name: Download tessera dist
@@ -466,7 +494,7 @@ jobs:
       - name: Build image as portable tar
         uses: docker/build-push-action@v2
         with:
-          tags: ${{ secrets.DOCKER_REPO }}:develop
+          tags: ${{ steps.get_docker_repo.outputs.docker-repo }}:develop
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
@@ -544,6 +572,16 @@ jobs:
     needs: [build_image, atest]
     runs-on: ubuntu-latest
     steps:
+      - name: Use secret or default
+        id: get_docker_repo
+        env:
+          DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
+        run: |
+          # use a non-existent repo as a default value - allows us to build images for tests but protect against PRs 
+          # from forks (that don't have access to secrets) pushing to the official repo 
+          val="${DOCKER_REPO:-quorumtest}"
+          echo $val
+          echo "::set-output name=docker-repo::$val"
       - name: Download image artifact
         uses: actions/download-artifact@v2
         with:
@@ -562,4 +600,4 @@ jobs:
           password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
       - name: Push image
         run : |
-          docker push ${{ secrets.DOCKER_REPO }}:develop
+          docker push ${{ steps.get_docker_repo.outputs.docker-repo }}:develop
