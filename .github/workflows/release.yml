@@ -45,7 +45,7 @@ jobs:
           USER_VERSION: ${{ github.event.inputs.release-version }}
           TAG_VERSION: ${{ steps.version.outputs.tag }}
         run: |
-          if [ ! $USER_VERSION -eq $TAG_VERSION ]; then
+          if [ $USER_VERSION != $TAG_VERSION ]; then
             echo "user-provided version (${{ github.event.inputs.release-version }} does not match tag version (${{ steps.version.outputs.tag }}) derived from version.txt, exiting)"
             exit 1
           fi
