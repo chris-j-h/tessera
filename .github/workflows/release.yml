@@ -17,7 +17,7 @@ env:
   TESSERA_DOCKER_IMAGE: quorumengineering/tessera
 
 jobs:
-  checkdependencies:
+  check_dependencies:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -25,8 +25,28 @@ jobs:
         with:
           java-version: 11
       - run: ./gradlew dependencyCheckAnalyze -x test
+  check_version:
+    runs-on: ubuntu-latest
+    steps:
+      -   uses: actions/checkout@v2
+      -   name: Get release version
+          id: version
+          run: echo "::set-output name=tag::$(cat version.txt | cut -d '-' -f 1)"
+      -   name: Check release version
+          env:
+            USER_VERSION: ${{ github.event.inputs.release-version }}
+            TAG_VERSION: ${{ steps.version.outputs.tag }}
+          run: |
+            # if [ $USER_VERSION = $TAG_VERSION ]
+            if [ $USER_VERSION -eq $TAG_VERSION ]
+            then
+              exit 0
+            fi
+            
+            echo "user-provided version (${{ github.event.inputs.release-version }} does not match tag version (${{ steps.version.outputs.tag }}) derived from version.txt, exiting)"
+            exit 1
   release_sonatype:
-    needs: checkdependencies
+    needs: [check_dependencies, check_version]
     runs-on: ubuntu-latest
     outputs:
       full-ver: ${{ steps.release.outputs.full-ver }}
@@ -40,15 +60,6 @@ jobs:
       - name: Get release version
         id: version
         run: echo "::set-output name=tag::$(cat version.txt | cut -d '-' -f 1)"
-      - name: Check release version
-        env:
-          USER_VERSION: ${{ github.event.inputs.release-version }}
-          TAG_VERSION: ${{ steps.version.outputs.tag }}
-        run: |
-          if [ $USER_VERSION != $TAG_VERSION ]; then
-            echo "user-provided version (${{ github.event.inputs.release-version }} does not match tag version (${{ steps.version.outputs.tag }}) derived from version.txt, exiting)"
-            exit 1
-          fi
       - name: Release
         id: release
         env:
