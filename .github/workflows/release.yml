@@ -1,12 +1,8 @@
 name: Tessera Release Build
 
 on:
-  workflow_dispatch:
-    inputs:
-      release-version:
-        description: 'Target release version (will be checked against branch version to protect against accidentally releasing wrong artifacts)'
-        required: true
-        type: string
+  repository_dispatch:
+    types: [release]
 
 env:
   SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
@@ -37,31 +33,18 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Get release version
-        id: version
-        run: echo "::set-output name=tag::$(cat version.txt | cut -d '-' -f 1)"
-      - name: Check release version
-        env:
-          USER_VERSION: ${{ github.event.inputs.release-version }}
-          TAG_VERSION: ${{ steps.version.outputs.tag }}
-        run: |
-          if [ ! $USER_VERSION -eq $TAG_VERSION ]; then
-            echo "user-provided version (${{ github.event.inputs.release-version }} does not match tag version (${{ steps.version.outputs.tag }}) derived from version.txt, exiting)"
-            exit 1
-          fi
       - name: Release
         id: release
-        env:
-          tag-version: ${{ steps.version.outputs.tag }}
         run: |
           git config user.name "quorumbot"
           now=`date +%Y%m%d%H%M%S`
-          tagname="tessera-$TAG_VERSION
+          tagversion=`cat version.txt | cut -d'-' -f1`
+          tagname="tessera-$tagversion"
           echo "Releasing $tagname"
-          echo "$TAG_VERSION" > version.txt
+          echo "$tagversion" > version.txt
           git add version.txt
-          git commit -m "Change to release version $TAG_VERSION"
-          git tag -a $TAG_VERSION -m "Release tessera $TAG_VERSION"
+          git commit -m "Change to release version $tagversion"
+          git tag -a $tagname -m "Release tessera $tagversion"
           git push --tags
 
           echo "${GPG_SECRET_KEYS}" | base64 --decode | gpg --import --no-tty --batch --yes
@@ -72,8 +55,8 @@ jobs:
           git add version.txt
           git commit -m "Change version to next development version"
 
-          minor_version=${$TAG_VERSION%.*}
-          echo ::set-output name=full-ver::$TAG_VERSION
+          minor_version=${tagversion%.*}
+          echo ::set-output name=full-ver::$tagversion
           echo ::set-output name=minor-ver::$minor_version
           echo ::set-output name=branch-name::release-$now
       - name: Create PR to update development version
