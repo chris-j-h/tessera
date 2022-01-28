@@ -410,8 +410,6 @@ jobs:
       - name: Get current date-time (RFC 3339 standard)
         id: date
         run: echo "::set-output name=now::$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
-      - name: check env
-        run: env
       - name: Build Docker image as portable tar
         uses: docker/build-push-action@v2
         with:
