@@ -446,6 +446,24 @@ jobs:
 #          job_name: Recovery integration tests
 #          url: ${{ secrets.SLACK_WEBHOOK }}
 
+#  get_docker_repo:
+#    name: Get the Docker repo name
+#    needs: [build]
+#    runs-on: ubuntu-latest
+#    outputs:
+#      docker-repo: ${{ steps.get.outputs.docker-repo }}
+#    steps:
+#      - name: Use secret or default
+#        id: get
+#        env:
+#          DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
+#        run: |
+#          # use a non-existant repo as a default value - allows us to build images for tests but protect against PRs
+#          # from forks (that don't have access to secrets) pushing to the official repo
+#          val="${DOCKER_REPO:-quorumtest}"
+#          echo $val
+#          echo "::set-output name=docker-repo::$val"
+
   build_image:
     name: Build develop Docker image
     needs: [build]
@@ -459,6 +477,7 @@ jobs:
           # use a non-existent repo as a default value - allows us to build images for tests but protect against PRs 
           # from forks (that don't have access to secrets) pushing to the official repo 
           val="${DOCKER_REPO:-quorumtest}"
+          echo $val
           echo "::set-output name=docker-repo::$val"
       - name: Checkout code from SCM
         uses: actions/checkout@v2
@@ -561,6 +580,7 @@ jobs:
           # use a non-existent repo as a default value - allows us to build images for tests but protect against PRs 
           # from forks (that don't have access to secrets) pushing to the official repo 
           val="${DOCKER_REPO:-quorumtest}"
+          echo $val
           echo "::set-output name=docker-repo::$val"
       - name: Download image artifact
         uses: actions/download-artifact@v2
