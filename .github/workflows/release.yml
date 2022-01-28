@@ -36,17 +36,18 @@ jobs:
             
             echo "user-provided version (${{ github.event.inputs.release-version }}) does not match tag version (${{ steps.version.outputs.tag }}) derived from version.txt, exiting"
             exit 1
-  check_dependencies:
-    needs: [ check_version ]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - run: ./gradlew dependencyCheckAnalyze -x test
+#  check_dependencies:
+#    needs: [ check_version ]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: actions/setup-java@v1
+#        with:
+#          java-version: 11
+#      - run: ./gradlew dependencyCheckAnalyze -x test
   release_sonatype:
-    needs: [check_dependencies, check_version]
+#    needs: [check_dependencies, check_version]
+    needs: [check_version]
     runs-on: ubuntu-latest
     outputs:
       full-ver: ${{ steps.release.outputs.full-ver }}
@@ -73,7 +74,9 @@ jobs:
           git add version.txt
           git commit -m "Change to release version $TAG_VERSION"
         
-          ./gradlew build -x dependencyCheckAnalyze -x javadoc -x test --info          
+          echo "starting build"
+          ./gradlew build -x dependencyCheckAnalyze -x javadoc -x test --info
+          echo "incrementing version"
           ./gradlew incrementProjectVersion --info
           git add version.txt
           git commit -m "Change version to next development version"
