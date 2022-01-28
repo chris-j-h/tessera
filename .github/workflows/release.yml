@@ -134,9 +134,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           tags: |
-            ${TESSERA_DOCKER_IMAGE}:latest
-            ${TESSERA_DOCKER_IMAGE}:${{ needs.release_sonatype.outputs.minor-ver }}
-            ${TESSERA_DOCKER_IMAGE}:${{ needs.release_sonatype.outputs.full-ver }}
+            ${{ env.TESSERA_DOCKER_IMAGE }}:latest
+            ${{ env.TESSERA_DOCKER_IMAGE }}:${{ needs.release_sonatype.outputs.minor-ver }}
+            ${{ env.TESSERA_DOCKER_IMAGE }}:${{ needs.release_sonatype.outputs.full-ver }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
@@ -149,9 +149,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           tags: |
-            ${TESSERA_DOCKER_IMAGE}:azure-latest
-            ${TESSERA_DOCKER_IMAGE}:azure-${{ needs.release_sonatype.outputs.minor-ver }}
-            ${TESSERA_DOCKER_IMAGE}:azure-${{ needs.release_sonatype.outputs.full-ver }}
+            ${{ env.TESSERA_DOCKER_IMAGE }}:azure-latest
+            ${{ env.TESSERA_DOCKER_IMAGE }}:azure-${{ needs.release_sonatype.outputs.minor-ver }}
+            ${{ env.TESSERA_DOCKER_IMAGE }}:azure-${{ needs.release_sonatype.outputs.full-ver }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
@@ -164,9 +164,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           tags: |
-            ${TESSERA_DOCKER_IMAGE}:aws-latest
-            ${TESSERA_DOCKER_IMAGE}:aws-${{ needs.release_sonatype.outputs.minor-ver }}
-            ${TESSERA_DOCKER_IMAGE}:aws-${{ needs.release_sonatype.outputs.full-ver }}
+            ${{ env.TESSERA_DOCKER_IMAGE }}:aws-latest
+            ${{ env.TESSERA_DOCKER_IMAGE }}:aws-${{ needs.release_sonatype.outputs.minor-ver }}
+            ${{ env.TESSERA_DOCKER_IMAGE }}:aws-${{ needs.release_sonatype.outputs.full-ver }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
@@ -179,9 +179,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           tags: |
-            ${TESSERA_DOCKER_IMAGE}:hashicorp-latest
-            ${TESSERA_DOCKER_IMAGE}:hashicorp-${{ needs.release_sonatype.outputs.minor-ver }}
-            ${TESSERA_DOCKER_IMAGE}:hashicorp-${{ needs.release_sonatype.outputs.full-ver }}
+            ${{ env.TESSERA_DOCKER_IMAGE }}:hashicorp-latest
+            ${{ env.TESSERA_DOCKER_IMAGE }}:hashicorp-${{ needs.release_sonatype.outputs.minor-ver }}
+            ${{ env.TESSERA_DOCKER_IMAGE }}:hashicorp-${{ needs.release_sonatype.outputs.full-ver }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
