@@ -458,7 +458,7 @@ jobs:
         run: |
           # use a non-existent repo as a default value - allows us to build images for tests but protect against PRs 
           # from forks (that don't have access to secrets) pushing to the official repo 
-#          val="${DOCKER_REPO:-quorumtest}"
+          # val="${DOCKER_REPO:-quorumtest}"
           echo "::set-output name=docker-repo::${DOCKER_REPO:-quorumtest}"
       - name: Checkout code from SCM
         uses: actions/checkout@v2
