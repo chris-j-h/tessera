@@ -10,6 +10,7 @@ env:
   GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
   GPG_EXECUTABLE: ${{ secrets.GPG_EXECUTABLE }}
   GPG_SECRET_KEYS: ${{ secrets.GPG_SECRET_KEYS }}
+  TESSERA_DOCKER_IMAGE: quorumengineering/tessera
 
 jobs:
   checkdependencies:
@@ -133,9 +134,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           tags: |
-            ${{ secrets.DOCKER_REPO }}:latest
-            ${{ secrets.DOCKER_REPO }}:${{ needs.release_sonatype.outputs.minor-ver }}
-            ${{ secrets.DOCKER_REPO }}:${{ needs.release_sonatype.outputs.full-ver }}
+            ${TESSERA_DOCKER_IMAGE}:latest
+            ${TESSERA_DOCKER_IMAGE}:${{ needs.release_sonatype.outputs.minor-ver }}
+            ${TESSERA_DOCKER_IMAGE}:${{ needs.release_sonatype.outputs.full-ver }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
@@ -148,9 +149,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           tags: |
-            ${{ secrets.DOCKER_REPO }}:azure-latest
-            ${{ secrets.DOCKER_REPO }}:azure-${{ needs.release_sonatype.outputs.minor-ver }}
-            ${{ secrets.DOCKER_REPO }}:azure-${{ needs.release_sonatype.outputs.full-ver }}
+            ${TESSERA_DOCKER_IMAGE}:azure-latest
+            ${TESSERA_DOCKER_IMAGE}:azure-${{ needs.release_sonatype.outputs.minor-ver }}
+            ${TESSERA_DOCKER_IMAGE}:azure-${{ needs.release_sonatype.outputs.full-ver }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
@@ -163,9 +164,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           tags: |
-            ${{ secrets.DOCKER_REPO }}:aws-latest
-            ${{ secrets.DOCKER_REPO }}:aws-${{ needs.release_sonatype.outputs.minor-ver }}
-            ${{ secrets.DOCKER_REPO }}:aws-${{ needs.release_sonatype.outputs.full-ver }}
+            ${TESSERA_DOCKER_IMAGE}:aws-latest
+            ${TESSERA_DOCKER_IMAGE}:aws-${{ needs.release_sonatype.outputs.minor-ver }}
+            ${TESSERA_DOCKER_IMAGE}:aws-${{ needs.release_sonatype.outputs.full-ver }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
@@ -178,9 +179,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           tags: |
-            ${{ secrets.DOCKER_REPO }}:hashicorp-latest
-            ${{ secrets.DOCKER_REPO }}:hashicorp-${{ needs.release_sonatype.outputs.minor-ver }}
-            ${{ secrets.DOCKER_REPO }}:hashicorp-${{ needs.release_sonatype.outputs.full-ver }}
+            ${TESSERA_DOCKER_IMAGE}:hashicorp-latest
+            ${TESSERA_DOCKER_IMAGE}:hashicorp-${{ needs.release_sonatype.outputs.minor-ver }}
+            ${TESSERA_DOCKER_IMAGE}:hashicorp-${{ needs.release_sonatype.outputs.full-ver }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
