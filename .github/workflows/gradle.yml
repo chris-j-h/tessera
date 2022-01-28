@@ -413,7 +413,7 @@ jobs:
       - name: Build Docker image as portable tar
         uses: docker/build-push-action@v2
         with:
-          tags: $TESSERA_DOCKER_IMAGE:develop
+          tags: ${TESSERA_DOCKER_IMAGE}:develop
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
