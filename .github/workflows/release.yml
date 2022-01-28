@@ -67,7 +67,7 @@ jobs:
         run: |
           git config user.name "quorumbot"
           now=`date +%Y%m%d%H%M%S`
-          tagname="tessera-$TAG_VERSION
+          tagname="tessera-$TAG_VERSION"
           echo "Releasing $tagname"
           echo "$TAG_VERSION" > version.txt
           git add version.txt
