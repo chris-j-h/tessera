@@ -61,6 +61,8 @@ jobs:
       - name: Get release version
         id: version
         run: echo "::set-output name=tag::$(cat version.txt | cut -d '-' -f 1)"
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
       - name: Release
         id: release
         env:
