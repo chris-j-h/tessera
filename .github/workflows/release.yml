@@ -75,7 +75,7 @@ jobs:
           git commit -m "Change to release version $TAG_VERSION"
         
           echo "starting build"
-          ./gradlew clean build -x dependencyCheckAnalyze -x javadoc -x test --info
+          ./gradlew clean build -x dependencyCheckAnalyze -x javadoc -x test --stacktrace
 
           minor_version=${$TAG_VERSION%.*}
           echo ::set-output name=full-ver::$TAG_VERSION
