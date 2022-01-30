@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       release-version:
-        description: 'Target release version (will be checked against branch version to protect against accidentally releasing wrong artifacts)'
+        description: 'Release version (checked against version.txt)'
         required: true
         type: string
 
@@ -19,6 +19,8 @@ env:
 jobs:
   check_version:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.tag }}
     steps:
       - uses: actions/checkout@v2
       - name: Get release version
@@ -33,8 +35,7 @@ jobs:
           then
             exit 0
           fi
-            
-          echo "user-provided version (${{ github.event.inputs.release-version }}) does not match tag version (${{ steps.version.outputs.tag }}) derived from version.txt, exiting"
+          echo "user-provided version ($USER_VERSION) does not match version.txt ($TAG_VERSION), exiting"
           exit 1
   check_dependencies:
     needs: [ check_version ]
@@ -58,13 +59,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Get release version
-        id: version
-        run: echo "::set-output name=tag::$(cat version.txt | cut -d '-' -f 1)"
       - name: Release
         id: release
         env:
-          TAG_VERSION: ${{ steps.version.outputs.tag }}
+          TAG_VERSION: ${{ jobs.check_version.outputs.version }}
         run: |
           git config user.name "quorumbot"
           now=`date +%Y%m%d%H%M%S`
@@ -73,14 +71,27 @@ jobs:
           echo "$TAG_VERSION" > version.txt
           git add version.txt
           git commit -m "Change to release version $TAG_VERSION"
-        
-          echo "starting build"
-          ./gradlew clean build -x dependencyCheckAnalyze -x javadoc -x test --stacktrace
+          git tag -a $tagname -m "Release tessera $TAG_VERSION"
+          git push --tags
+
+          echo "${GPG_SECRET_KEYS}" | base64 --decode | gpg --import --no-tty --batch --yes
+          echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust
+          pubkey=`gpg --list-keys -a info@goquorum.com|head -2|tail -1|xargs`
+          ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository -PsonatypeUsername=$SONATYPE_USERNAME -PsonatypePassword=$SONATYPE_PASSWORD -Psigning.gnupg.keyName=$pubkey --info
+          ./gradlew incrementProjectVersion --info
+          git add version.txt
+          git commit -m "Change version to next development version"
 
           minor_version=${$TAG_VERSION%.*}
           echo ::set-output name=full-ver::$TAG_VERSION
           echo ::set-output name=minor-ver::$minor_version
           echo ::set-output name=branch-name::release-$now
+      - name: Create PR to update development version
+        uses: peter-evans/create-pull-request@v3
+        with:
+          branch: ${{ steps.release.outputs.branch-name }}
+          title: Update development version
+          body: Triggered by release https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
       - name: Upload tessera dists
         uses: actions/upload-artifact@v2
         if: success()
