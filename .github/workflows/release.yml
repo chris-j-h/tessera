@@ -83,7 +83,7 @@ jobs:
           git add version.txt
           git commit -m "Change version to next development version"
 
-          minor_version=${$TAG_VERSION%.*}
+          minor_version=$($TAG_VERSION | cut -d '.' -f 1,2)
           echo ::set-output name=full-ver::$TAG_VERSION
           echo ::set-output name=minor-ver::$minor_version
           echo ::set-output name=branch-name::release-$now
