@@ -74,10 +74,10 @@ jobs:
           git tag -a $tagname -m "Release tessera $TAG_VERSION"
           git push --tags
 
-#          echo "${GPG_SECRET_KEYS}" | base64 --decode | gpg --import --no-tty --batch --yes
-#          echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust
-#          pubkey=`gpg --list-keys -a info@goquorum.com|head -2|tail -1|xargs`
-#          ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository -PsonatypeUsername=$SONATYPE_USERNAME -PsonatypePassword=$SONATYPE_PASSWORD -Psigning.gnupg.keyName=$pubkey --info
+          # echo "${GPG_SECRET_KEYS}" | base64 --decode | gpg --import --no-tty --batch --yes
+          # echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust
+          # pubkey=`gpg --list-keys -a info@goquorum.com|head -2|tail -1|xargs`
+          # ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository -PsonatypeUsername=$SONATYPE_USERNAME -PsonatypePassword=$SONATYPE_PASSWORD -Psigning.gnupg.keyName=$pubkey --info
           ./gradlew build -x dependencyCheckAnalyze -x javadoc -x test --info
           ./gradlew incrementProjectVersion --info
           git add version.txt
