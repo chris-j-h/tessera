@@ -61,8 +61,6 @@ jobs:
       - name: Get release version
         id: version
         run: echo "::set-output name=tag::$(cat version.txt | cut -d '-' -f 1)"
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
       - name: Release
         id: release
         env:
@@ -77,11 +75,7 @@ jobs:
           git commit -m "Change to release version $TAG_VERSION"
         
           echo "starting build"
-          ./gradlew build -x dependencyCheckAnalyze -x javadoc -x test --info
-          echo "incrementing version"
-          ./gradlew incrementProjectVersion --info
-          git add version.txt
-          git commit -m "Change version to next development version"
+          ./gradlew clean build -x dependencyCheckAnalyze -x javadoc -x test --info
 
           minor_version=${$TAG_VERSION%.*}
           echo ::set-output name=full-ver::$TAG_VERSION
