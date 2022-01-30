@@ -81,12 +81,6 @@ jobs:
           echo ::set-output name=full-ver::$TAG_VERSION
           echo ::set-output name=minor-ver::$minor_version
           echo ::set-output name=branch-name::release-$now
-      - name: Create PR to update development version
-        uses: peter-evans/create-pull-request@v3
-        with:
-          branch: ${{ steps.release.outputs.branch-name }}
-          title: Update development version
-          body: Triggered by release https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
       - name: Upload tessera dists
         uses: actions/upload-artifact@v2
         if: success()
