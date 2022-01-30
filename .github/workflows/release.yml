@@ -62,7 +62,7 @@ jobs:
       - name: Release
         id: release
         env:
-          TAG_VERSION: ${{ jobs.check_version.outputs.version }}
+          TAG_VERSION: ${{ needs.check_version.outputs.version }}
         run: |
           git config user.name "quorumbot"
           now=`date +%Y%m%d%H%M%S`
