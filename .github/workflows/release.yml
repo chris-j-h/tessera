@@ -18,7 +18,7 @@ env:
   TESSERA_DOCKER_IMAGE_NAME: chounsom/tessera
 
 jobs:
-  version:
+  check-version:
     runs-on: ubuntu-latest
     outputs:
       full-version: ${{ steps.version.outputs.full-version }}
@@ -50,8 +50,8 @@ jobs:
           fi
           echo "user-provided version ($USER_VERSION) does not match version.txt ($TAG_VERSION), exiting"
           exit 1
-  check_dependencies:
-    needs: [ check_version ]
+  check-dependencies:
+    needs: [ check-version ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -59,8 +59,8 @@ jobs:
         with:
           java-version: 11
       - run: ./gradlew dependencyCheckAnalyze -x test
-  release_sonatype:
-    needs: [check_dependencies, check_version]
+  release-sonatype:
+    needs: [ check-dependencies, check-version ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -128,8 +128,8 @@ jobs:
           name: hashicorp-key-vault-dists
           path: key-vault/hashicorp-key-vault/build/distributions/
 
-  release_docker:
-    needs: [version, release_sonatype]
+  release-docker:
+    needs: [version, release-sonatype]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code from SCM
