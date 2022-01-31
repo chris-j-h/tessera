@@ -59,8 +59,8 @@ jobs:
         with:
           java-version: 11
       - run: |
-        exit 0
-        # ./gradlew dependencyCheckAnalyze -x test
+          exit 0
+          # ./gradlew dependencyCheckAnalyze -x test
   release-sonatype:
     needs: [ check-dependencies, check-version ]
     runs-on: ubuntu-latest
