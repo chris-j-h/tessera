@@ -14,7 +14,8 @@ env:
   GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
   GPG_EXECUTABLE: ${{ secrets.GPG_EXECUTABLE }}
   GPG_SECRET_KEYS: ${{ secrets.GPG_SECRET_KEYS }}
-  TESSERA_DOCKER_IMAGE: quorumengineering/tessera
+#  TESSERA_DOCKER_IMAGE: quorumengineering/tessera
+  TESSERA_DOCKER_IMAGE: chounsom/tessera
 
 jobs:
   check_version:
@@ -173,7 +174,7 @@ jobs:
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created=${{ steps.date.outputs.now }}
-          push: true
+          push: false
           file: docker/tessera.Dockerfile
           # context must be explicitly provided to prevent docker/build-push-action checking out the repo again and deleting the downloaded artifacts
           context: .
@@ -188,7 +189,7 @@ jobs:
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created=${{ steps.date.outputs.now }}
-          push: true
+          push: false
           file: docker/tessera.azure.Dockerfile
           # context must be explicitly provided to prevent docker/build-push-action checking out the repo again and deleting the downloaded artifacts
           context: .
@@ -203,7 +204,7 @@ jobs:
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created=${{ steps.date.outputs.now }}
-          push: true
+          push: false
           file: docker/tessera.aws.Dockerfile
           # context must be explicitly provided to prevent docker/build-push-action checking out the repo again and deleting the downloaded artifacts
           context: .
@@ -218,7 +219,7 @@ jobs:
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created=${{ steps.date.outputs.now }}
-          push: true
+          push: false
           file: docker/tessera.hashicorp.Dockerfile
           # context must be explicitly provided to prevent docker/build-push-action checking out the repo again and deleting the downloaded artifacts
           context: .
