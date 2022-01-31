@@ -129,7 +129,7 @@ jobs:
           path: key-vault/hashicorp-key-vault/build/distributions/
 
   release-docker:
-    needs: [version, release-sonatype]
+    needs: [check-version, release-sonatype]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code from SCM
