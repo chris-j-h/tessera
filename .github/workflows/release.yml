@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Get release version
-        id: get-version
+        id: version
         run: |
           # 1.2.3-SNAPSHOT --> 1.2.3
           FULL_VERSION=$(cat version.txt | cut -d '-' -f 1)
@@ -42,7 +42,7 @@ jobs:
       - name: Check release version
         env:
           USER_VERSION: ${{ github.event.inputs.release-version }}
-          TAG_VERSION: ${{ steps.get-version.outputs.full-version }}
+          TAG_VERSION: ${{ steps.version.outputs.full-version }}
         run: |
           if [ $USER_VERSION = $TAG_VERSION ]
           then
@@ -71,9 +71,9 @@ jobs:
       - name: Release
         id: release
         env:
-          FULL_VERSION: ${{ needs.version.outputs.full-version }}
-          MINOR_VERSION: ${{ needs.version.outputs.minor-version }}
-          TAG_NAME: tessera-${{ needs.version.outputs.full-version }}
+          FULL_VERSION: ${{ needs.check-version.outputs.full-version }}
+          MINOR_VERSION: ${{ needs.check-version.outputs.minor-version }}
+          TAG_NAME: tessera-${{ needs.check-version.outputs.full-version }}
         run: |
           echo "Releasing $FULL_VERSION"
 
@@ -173,8 +173,8 @@ jobs:
         with:
           tags: |
             ${{ env.TESSERA_DOCKER_IMAGE_NAME }}:latest
-            ${{ env.TESSERA_DOCKER_IMAGE_NAME }}:${{ needs.version.outputs.minor-version }}
-            ${{ env.TESSERA_DOCKER_IMAGE_NAME }}:${{ needs.version.outputs.full-version }}
+            ${{ env.TESSERA_DOCKER_IMAGE_NAME }}:${{ needs.check-version.outputs.minor-version }}
+            ${{ env.TESSERA_DOCKER_IMAGE_NAME }}:${{ needs.check-version.outputs.full-version }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
@@ -188,8 +188,8 @@ jobs:
         with:
           tags: |
             ${{ env.TESSERA_DOCKER_IMAGE_NAME }}:azure-latest
-            ${{ env.TESSERA_DOCKER_IMAGE_NAME }}:azure-${{ needs.version.outputs.minor-version }}
-            ${{ env.TESSERA_DOCKER_IMAGE_NAME }}:azure-${{ needs.version.outputs.full-version }}
+            ${{ env.TESSERA_DOCKER_IMAGE_NAME }}:azure-${{ needs.check-version.outputs.minor-version }}
+            ${{ env.TESSERA_DOCKER_IMAGE_NAME }}:azure-${{ needs.check-version.outputs.full-version }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
@@ -203,8 +203,8 @@ jobs:
         with:
           tags: |
             ${{ env.TESSERA_DOCKER_IMAGE_NAME }}:aws-latest
-            ${{ env.TESSERA_DOCKER_IMAGE_NAME }}:aws-${{ needs.version.outputs.minor-version }}
-            ${{ env.TESSERA_DOCKER_IMAGE_NAME }}:aws-${{ needs.version.outputs.full-version }}
+            ${{ env.TESSERA_DOCKER_IMAGE_NAME }}:aws-${{ needs.check-version.outputs.minor-version }}
+            ${{ env.TESSERA_DOCKER_IMAGE_NAME }}:aws-${{ needs.check-version.outputs.full-version }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
@@ -218,8 +218,8 @@ jobs:
         with:
           tags: |
             ${{ env.TESSERA_DOCKER_IMAGE_NAME }}:hashicorp-latest
-            ${{ env.TESSERA_DOCKER_IMAGE_NAME }}:hashicorp-${{ needs.version.outputs.minor-version }}
-            ${{ env.TESSERA_DOCKER_IMAGE_NAME }}:hashicorp-${{ needs.version.outputs.full-version }}
+            ${{ env.TESSERA_DOCKER_IMAGE_NAME }}:hashicorp-${{ needs.check-version.outputs.minor-version }}
+            ${{ env.TESSERA_DOCKER_IMAGE_NAME }}:hashicorp-${{ needs.check-version.outputs.full-version }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
