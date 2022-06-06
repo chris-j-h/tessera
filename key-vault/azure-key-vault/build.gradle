@@ -17,25 +17,17 @@ configurations.all {
   exclude group: "jakarta.json"
 }
 
-def nettyVersion = "4.1.76.Final"
-
 dependencies {
-  // set version of nearly all netty modules this way
-  implementation platform('io.projectreactor:reactor-bom:2020.0.18')
-  implementation 'io.projectreactor.netty:reactor-netty'
-  implementation 'io.projectreactor.netty:reactor-netty-core'
-  implementation 'io.projectreactor.netty:reactor-netty-http'
-  // set the versions of any that are still causing dependency check issues
-  implementation "io.netty:netty-transport-native-kqueue:$nettyVersion"
-
   implementation project(":config")
   implementation project(":key-vault:key-vault-api")
   implementation "jakarta.annotation:jakarta.annotation-api"
   implementation "com.sun.activation:jakarta.activation"
 
-  implementation ("com.azure:azure-security-keyvault-secrets:4.2.3")
-  implementation("com.azure:azure-identity:1.3.5")
-  implementation("com.azure:azure-core:1.19.0")
+  implementation ("com.azure:azure-security-keyvault-secrets:4.4.1")
+  implementation("com.azure:azure-identity:1.5.0")
+  implementation("com.azure:azure-core:1.27.0")
+
+  implementation("io.netty:netty-tcnative-boringssl-static:2.0.51.Final")
 
   testImplementation "org.glassfish:jakarta.json"
 

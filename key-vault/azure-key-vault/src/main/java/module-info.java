@@ -7,7 +7,7 @@ module tessera.keyvault.azure {
   requires com.azure.identity;
   requires com.azure.security.keyvault.secrets;
   requires com.azure.http.netty;
-  requires reactor.netty;
+  //  requires reactor.netty;
   requires io.netty.handler;
   requires io.netty.common;
 
