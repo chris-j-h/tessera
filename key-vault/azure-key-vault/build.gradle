@@ -22,37 +22,18 @@ configurations.all {
 dependencies {
   implementation project(":config")
   implementation project(":key-vault:key-vault-api")
-  //  implementation "jakarta.annotation:jakarta.annotation-api"
-  //  implementation "com.sun.activation:jakarta.activation"
 
   implementation ("com.azure:azure-security-keyvault-secrets:4.4.2") {
     exclude group: 'com.azure', module: 'azure-core-http-netty'
-    //    exclude group: 'io.netty', module: 'netty-tcnative-boringssl-static'
   }
   implementation("com.azure:azure-identity:1.5.1") {
     exclude group: 'com.azure', module: 'azure-core-http-netty'
-    //    exclude group: 'io.netty', module: 'netty-tcnative-boringssl-static'
   }
   implementation("com.azure:azure-core:1.29.1") {
     exclude group: 'com.azure', module: 'azure-core-http-netty'
-    //    exclude group: 'io.netty', module: 'netty-tcnative-boringssl-static'
   }
-
   implementation 'com.azure:azure-core-http-okhttp:1.10.1'
   implementation 'com.squareup.okio:okio:3.1.0'
-
-  //  implementation("io.netty:netty-tcnative-boringssl-static:2.0.51.Final")
-
-  //  the aws dependencies often introduce CVE vulnerabilities - keep this code block here as a guide for if netty causes problems and an aws patch isn't available
-  //  implementation "io.netty:netty-handler:$nettyVersion"
-  //  implementation "io.netty:netty-common:$nettyVersion"
-  //  implementation "io.netty:netty-buffer:$nettyVersion"
-  //  implementation "io.netty:netty-transport:$nettyVersion"
-  //  implementation "io.netty:netty-codec:$nettyVersion"
-  //  implementation "io.netty:netty-codec-http:$nettyVersion"
-  //  implementation "io.netty:netty-codec-http2:$nettyVersion"
-  //  implementation "io.netty:netty-transport-native-unix-common:$nettyVersion"
-  //  implementation "io.netty:netty-transport-native-epoll:$nettyVersion:linux-x86_64"
 
   testImplementation "org.glassfish:jakarta.json"
 
