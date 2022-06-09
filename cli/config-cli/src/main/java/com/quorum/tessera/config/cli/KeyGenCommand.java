@@ -98,36 +98,54 @@ public class KeyGenCommand implements Callable<CliResult> {
     for (GeneratedKeyPair kp : generatedKeyPairs) {
       i++;
       if (kp.getConfigKeyPair() instanceof AzureVaultKeyPair) {
-        sj.add(String.format("\t%d: type=azure, pub=%s", i, kp.getMetadata().get("publicKeyValue")));
-        sj.add(String.format("\t\tpub: name=%s, version=%s", kp.getMetadata().get("publicKeyName"), kp.getMetadata().get("publicKeyVersion")));
-        sj.add(String.format("\t\tprv: name=%s, version=%s", kp.getMetadata().get("privateKeyName"), kp.getMetadata().get("privateKeyVersion")));
+        AzureVaultKeyPair akp = (AzureVaultKeyPair) kp.getConfigKeyPair();
+        String type = "azure";
+//        String pubKey = kp.getMetadata().get("publicKeyValue");
+        String pubKey = kp.getPublicKey();
+        String pubId = akp.getPublicKeyId();
+        String privId = akp.getPrivateKeyId();
+        String pubVersion = akp.getPublicKeyVersion();
+        String privVersion = akp.getPrivateKeyVersion();
+
+        sj.add(String.format("\t%d: type=%s, pub=%s", i, type, pubKey));
+        sj.add(String.format("\t\tpub: id=%s, version=%s", pubId, pubVersion));
+        sj.add(String.format("\t\tprv: id=%s, version=%s", privId, privVersion));
       } else if (kp.getConfigKeyPair() instanceof AWSKeyPair) {
         AWSKeyPair akp = (AWSKeyPair) kp.getConfigKeyPair();
         String type = "aws";
-        String pubKeyHex = kp.getMetadata().get("publicKeyValue");
+//        String pubKey = kp.getMetadata().get("publicKeyValue");
+        String pubKey = kp.getPublicKey();
         String pubId = akp.getPublicKeyId();
         String privId = akp.getPrivateKeyId();
 
-        sj.add(String.format("\t%d: type=%s, pub=%s", i, type, pubKeyHex));
+        sj.add(String.format("\t%d: type=%s, pub=%s", i, type, pubKey));
         sj.add(String.format("\t\tpub: id=%s", pubId));
         sj.add(String.format("\t\tprv: id=%s", privId));
       } else if (kp.getConfigKeyPair() instanceof HashicorpVaultKeyPair) {
         HashicorpVaultKeyPair hkp = (HashicorpVaultKeyPair) kp.getConfigKeyPair();
         String type = "hashicorp";
-        String pubKeyHex = kp.getMetadata().get("publicKeyValue");
+//        String pubKey = kp.getMetadata().get("publicKeyValue");
+        String pubKey = kp.getPublicKey();
         String name = hkp.getSecretName();
         String secretEngine = hkp.getSecretEngineName();
         String version = hkp.getSecretVersion().toString();
         String pubId = hkp.getPublicKeyId();
         String privId = hkp.getPrivateKeyId();
 
-        sj.add(String.format("\t%d: type=%s, pub=%s", i, type, pubKeyHex));
+        sj.add(String.format("\t%d: type=%s, pub=%s", i, type, pubKey));
         sj.add(String.format("\t\tpub: name=%s/%s, id=%s, version=%s", secretEngine, name, pubId, version));
         sj.add(String.format("\t\tprv: name=%s/%s, id=%s, version=%s", secretEngine, name, privId, version));
       } else if (kp.getConfigKeyPair() instanceof FilesystemKeyPair) {
-        sj.add(String.format("\t%d: type=file, pub=%s", i, kp.getMetadata().get("publicKeyValue")));
-        sj.add(String.format("\t\tpub: path=%s", kp.getMetadata().get("publicKeyPath")));
-        sj.add(String.format("\t\tprv: path=%s", kp.getMetadata().get("privateKeyPath")));
+        FilesystemKeyPair fkp = (FilesystemKeyPair) kp.getConfigKeyPair();
+        String type = "file";
+        String pubPath = fkp.getPublicKeyPath().toAbsolutePath().toString();
+        String privPath = fkp.getPrivateKeyPath().toAbsolutePath().toString();
+        String pubKey = kp.getPublicKey();
+//        String pubKey = kp.getMetadata().get("publicKeyValue");
+
+        sj.add(String.format("\t%d: type=%s, pub=%s", i, type, pubKey));
+        sj.add(String.format("\t\tpub: path=%s", pubPath));
+        sj.add(String.format("\t\tprv: path=%s", privPath));
       } else {
         sj.add(String.format("\t%d: type=unknown, pub=%s", i, kp.getConfigKeyPair().getPublicKey()));
       }

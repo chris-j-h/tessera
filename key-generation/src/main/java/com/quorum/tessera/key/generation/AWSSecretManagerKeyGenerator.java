@@ -58,13 +58,13 @@ public class AWSSecretManagerKeyGenerator implements KeyGenerator {
 
     AWSKeyPair keyPair = new AWSKeyPair(publicId.toString(), privateId.toString());
 
-    Map<String,String> metadata = Map.of(
-      "publicKeyValue", keys.getPublicKey().encodeToBase64(),
-      "publicKeyName", pubResp.getProperty("name"),
-      "privateKeyName", privResp.getProperty("name")
-    );
+//    Map<String,String> metadata = Map.of(
+//      "publicKeyValue", keys.getPublicKey().encodeToBase64(),
+//      "publicKeyName", pubResp.getProperty("name"),
+//      "privateKeyName", privResp.getProperty("name")
+//    );
 
-    return new GeneratedKeyPair(keyPair, metadata);
+    return new GeneratedKeyPair(keyPair, keys.getPublicKey().encodeToBase64());
   }
 
   private SetSecretResponse saveKeyInSecretManager(String id, Key key) {

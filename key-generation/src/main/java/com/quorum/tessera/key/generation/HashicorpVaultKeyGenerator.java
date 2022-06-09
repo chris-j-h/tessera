@@ -65,11 +65,11 @@ public class HashicorpVaultKeyGenerator implements KeyGenerator {
     HashicorpVaultKeyPair keyPair = new HashicorpVaultKeyPair(
       pubId, privId, keyVaultOptions.getSecretEngineName(), filename, Integer.valueOf(resp.getProperty("version")));
 
-    Map<String,String> metadata = Map.of(
-      "publicKeyValue", keys.getPublicKey().encodeToBase64()
-    );
+//    Map<String,String> metadata = Map.of(
+//      "publicKeyValue", keys.getPublicKey().encodeToBase64()
+//    );
 
-    return new GeneratedKeyPair(keyPair, metadata);
+    return new GeneratedKeyPair(keyPair, keys.getPublicKey().encodeToBase64());
 
   }
 }

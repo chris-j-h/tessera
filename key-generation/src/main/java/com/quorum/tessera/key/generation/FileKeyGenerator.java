@@ -117,12 +117,10 @@ public class FileKeyGenerator implements KeyGenerator {
 
     keyPair.withPassword(password);
 
-    Map<String,String> metadata = Map.of(
-      "publicKeyValue", publicKeyBase64,
-      "publicKeyPath", publicKeyPath.toAbsolutePath().toString(),
-      "privateKeyPath", publicKeyPath.toAbsolutePath().toString()
-    );
+//    Map<String,String> metadata = Map.of(
+//      "publicKeyValue", publicKeyBase64
+//    );
 
-    return new GeneratedKeyPair(keyPair, metadata);
+    return new GeneratedKeyPair(keyPair, publicKeyBase64);
   }
 }
