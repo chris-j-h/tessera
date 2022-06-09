@@ -86,9 +86,8 @@ public class HashicorpKeyVaultService implements KeyVaultService {
             vaultOperations, secretEngineName);
     try {
       Versioned.Metadata metadata = keyValueOperations.put(secretName, nameValuePairs);
-      return new SetSecretResponse(Map.of(
-        "version", String.valueOf(metadata.getVersion().getVersion())
-      ));
+      return new SetSecretResponse(
+          Map.of("version", String.valueOf(metadata.getVersion().getVersion())));
     } catch (NullPointerException ex) {
       throw new HashicorpVaultException(
           "Unable to save generated secret to vault.  Ensure that the secret engine being used is a v2 kv secret engine");

@@ -57,10 +57,7 @@ public class AzureKeyVaultService implements KeyVaultService {
     KeyVaultSecret kvs = secretClient.setSecret(secretName, secret);
 
     SetSecretResponse resp =
-        new SetSecretResponse(
-            Map.of(
-                "name", kvs.getProperties().getName(),
-                "version", kvs.getProperties().getVersion()));
+        new SetSecretResponse(Map.of("version", kvs.getProperties().getVersion()));
     return resp;
   }
 }

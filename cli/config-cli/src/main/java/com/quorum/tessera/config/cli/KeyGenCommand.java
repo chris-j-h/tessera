@@ -100,7 +100,6 @@ public class KeyGenCommand implements Callable<CliResult> {
       if (kp.getConfigKeyPair() instanceof AzureVaultKeyPair) {
         AzureVaultKeyPair akp = (AzureVaultKeyPair) kp.getConfigKeyPair();
         String type = "azure";
-//        String pubKey = kp.getMetadata().get("publicKeyValue");
         String pubKey = kp.getPublicKey();
         String pubId = akp.getPublicKeyId();
         String privId = akp.getPrivateKeyId();
@@ -113,7 +112,6 @@ public class KeyGenCommand implements Callable<CliResult> {
       } else if (kp.getConfigKeyPair() instanceof AWSKeyPair) {
         AWSKeyPair akp = (AWSKeyPair) kp.getConfigKeyPair();
         String type = "aws";
-//        String pubKey = kp.getMetadata().get("publicKeyValue");
         String pubKey = kp.getPublicKey();
         String pubId = akp.getPublicKeyId();
         String privId = akp.getPrivateKeyId();
@@ -124,7 +122,6 @@ public class KeyGenCommand implements Callable<CliResult> {
       } else if (kp.getConfigKeyPair() instanceof HashicorpVaultKeyPair) {
         HashicorpVaultKeyPair hkp = (HashicorpVaultKeyPair) kp.getConfigKeyPair();
         String type = "hashicorp";
-//        String pubKey = kp.getMetadata().get("publicKeyValue");
         String pubKey = kp.getPublicKey();
         String name = hkp.getSecretName();
         String secretEngine = hkp.getSecretEngineName();
@@ -133,21 +130,25 @@ public class KeyGenCommand implements Callable<CliResult> {
         String privId = hkp.getPrivateKeyId();
 
         sj.add(String.format("\t%d: type=%s, pub=%s", i, type, pubKey));
-        sj.add(String.format("\t\tpub: name=%s/%s, id=%s, version=%s", secretEngine, name, pubId, version));
-        sj.add(String.format("\t\tprv: name=%s/%s, id=%s, version=%s", secretEngine, name, privId, version));
+        sj.add(
+            String.format(
+                "\t\tpub: name=%s/%s, id=%s, version=%s", secretEngine, name, pubId, version));
+        sj.add(
+            String.format(
+                "\t\tprv: name=%s/%s, id=%s, version=%s", secretEngine, name, privId, version));
       } else if (kp.getConfigKeyPair() instanceof FilesystemKeyPair) {
         FilesystemKeyPair fkp = (FilesystemKeyPair) kp.getConfigKeyPair();
         String type = "file";
         String pubPath = fkp.getPublicKeyPath().toAbsolutePath().toString();
         String privPath = fkp.getPrivateKeyPath().toAbsolutePath().toString();
         String pubKey = kp.getPublicKey();
-//        String pubKey = kp.getMetadata().get("publicKeyValue");
 
         sj.add(String.format("\t%d: type=%s, pub=%s", i, type, pubKey));
         sj.add(String.format("\t\tpub: path=%s", pubPath));
         sj.add(String.format("\t\tprv: path=%s", privPath));
       } else {
-        sj.add(String.format("\t%d: type=unknown, pub=%s", i, kp.getConfigKeyPair().getPublicKey()));
+        sj.add(
+            String.format("\t%d: type=unknown, pub=%s", i, kp.getConfigKeyPair().getPublicKey()));
       }
     }
     System.out.println(sj);

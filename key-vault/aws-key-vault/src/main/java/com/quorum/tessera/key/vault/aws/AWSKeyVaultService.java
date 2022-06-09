@@ -22,7 +22,6 @@ public class AWSKeyVaultService implements KeyVaultService {
 
   @Override
   public String getSecret(Map<String, String> getSecretData) {
-
     final String secretName = getSecretData.get(SECRET_NAME_KEY);
 
     GetSecretValueRequest getSecretValueRequest =
@@ -48,7 +47,6 @@ public class AWSKeyVaultService implements KeyVaultService {
 
   @Override
   public SetSecretResponse setSecret(Map<String, String> setSecretData) {
-
     final String secretName = setSecretData.get(SECRET_NAME_KEY);
     final String secret = setSecretData.get(SECRET_KEY);
 
@@ -57,9 +55,6 @@ public class AWSKeyVaultService implements KeyVaultService {
 
     CreateSecretResponse r = secretsManager.createSecret(createSecretRequest);
 
-    return new SetSecretResponse(Map.of(
-      "name", r.name(),
-      "version", r.versionId()
-    ));
+    return new SetSecretResponse(Map.of("version", r.versionId()));
   }
 }

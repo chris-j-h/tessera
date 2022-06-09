@@ -5,11 +5,10 @@ import com.quorum.tessera.config.keypairs.HashicorpVaultKeyPair;
 import com.quorum.tessera.encryption.Encryptor;
 import com.quorum.tessera.encryption.KeyPair;
 import com.quorum.tessera.key.vault.KeyVaultService;
+import com.quorum.tessera.key.vault.SetSecretResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import com.quorum.tessera.key.vault.SetSecretResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,26 +49,26 @@ public class HashicorpVaultKeyGenerator implements KeyGenerator {
 
     SetSecretResponse resp = keyVaultService.setSecret(setSecretData);
 
-    LOGGER.info(
+    LOGGER.debug(
         "Key saved to vault secret engine {} with name {} and id {}",
         keyVaultOptions.getSecretEngineName(),
         filename,
         pubId);
 
-    LOGGER.info(
+    LOGGER.debug(
         "Key saved to vault secret engine {} with name {} and id {}",
         keyVaultOptions.getSecretEngineName(),
         filename,
         privId);
 
-    HashicorpVaultKeyPair keyPair = new HashicorpVaultKeyPair(
-      pubId, privId, keyVaultOptions.getSecretEngineName(), filename, Integer.valueOf(resp.getProperty("version")));
-
-//    Map<String,String> metadata = Map.of(
-//      "publicKeyValue", keys.getPublicKey().encodeToBase64()
-//    );
+    HashicorpVaultKeyPair keyPair =
+        new HashicorpVaultKeyPair(
+            pubId,
+            privId,
+            keyVaultOptions.getSecretEngineName(),
+            filename,
+            Integer.valueOf(resp.getProperty("version")));
 
     return new GeneratedKeyPair(keyPair, keys.getPublicKey().encodeToBase64());
-
   }
 }

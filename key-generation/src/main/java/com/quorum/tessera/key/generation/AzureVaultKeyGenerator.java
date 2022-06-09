@@ -60,14 +60,7 @@ public class AzureVaultKeyGenerator implements KeyGenerator {
             privateId.toString(),
             pubResp.getProperty("version"),
             privResp.getProperty("version"));
-//    Map<String, String> metadata =
-//        Map.of(
-//            "publicKeyValue", keys.getPublicKey().encodeToBase64(),
-//            "publicKeyName", pubResp.getProperty("name"),
-//            "publicKeyVersion", pubResp.getProperty("version"),
-//            "privateKeyName", privResp.getProperty("name"),
-//            "privateKeyVersion", privResp.getProperty("version")
-//        );
+
     return new GeneratedKeyPair(keyPair, keys.getPublicKey().encodeToBase64());
   }
 
@@ -75,9 +68,6 @@ public class AzureVaultKeyGenerator implements KeyGenerator {
     SetSecretResponse resp =
         keyVaultService.setSecret(Map.of("secretName", id, "secret", key.encodeToBase64()));
     LOGGER.debug("Key {} saved to vault with id {}", key.encodeToBase64(), id);
-    // TODO(cjh) remove this from the other generators too - don't need info logs if we're moving
-    // output to stdout
-    //    LOGGER.info("Key saved to vault with id {}", id);
     return resp;
   }
 }

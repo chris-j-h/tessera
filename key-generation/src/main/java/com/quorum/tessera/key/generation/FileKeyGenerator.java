@@ -20,7 +20,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
-import java.util.Map;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,17 +108,13 @@ public class FileKeyGenerator implements KeyGenerator {
     IOCallback.execute(
         () -> Files.write(privateKeyPath, privateKeyJson.getBytes(UTF_8), CREATE_NEW));
 
-    LOGGER.info("Saved public key to {}", publicKeyPath.toAbsolutePath().toString());
-    LOGGER.info("Saved private key to {}", privateKeyPath.toAbsolutePath().toString());
+    LOGGER.debug("Saved public key to {}", publicKeyPath.toAbsolutePath());
+    LOGGER.debug("Saved private key to {}", privateKeyPath.toAbsolutePath());
 
     final FilesystemKeyPair keyPair =
         new FilesystemKeyPair(publicKeyPath, privateKeyPath, keyEncryptor);
 
     keyPair.withPassword(password);
-
-//    Map<String,String> metadata = Map.of(
-//      "publicKeyValue", publicKeyBase64
-//    );
 
     return new GeneratedKeyPair(keyPair, publicKeyBase64);
   }
