@@ -8,6 +8,8 @@ import com.quorum.tessera.key.vault.KeyVaultService;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import com.quorum.tessera.key.vault.SetSecretResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +27,7 @@ public class HashicorpVaultKeyGenerator implements KeyGenerator {
   }
 
   @Override
-  public HashicorpVaultKeyPair generate(
+  public GeneratedKeyPair generate(
       String filename, ArgonOptions encryptionOptions, KeyVaultOptions keyVaultOptions) {
     Objects.requireNonNull(filename);
     Objects.requireNonNull(
@@ -46,7 +48,7 @@ public class HashicorpVaultKeyGenerator implements KeyGenerator {
     setSecretData.put("secretName", filename);
     setSecretData.put("secretEngineName", keyVaultOptions.getSecretEngineName());
 
-    keyVaultService.setSecret(setSecretData);
+    SetSecretResponse resp = keyVaultService.setSecret(setSecretData);
 
     LOGGER.info(
         "Key saved to vault secret engine {} with name {} and id {}",
@@ -60,7 +62,14 @@ public class HashicorpVaultKeyGenerator implements KeyGenerator {
         filename,
         privId);
 
-    return new HashicorpVaultKeyPair(
-        pubId, privId, keyVaultOptions.getSecretEngineName(), filename, null);
+    HashicorpVaultKeyPair keyPair = new HashicorpVaultKeyPair(
+      pubId, privId, keyVaultOptions.getSecretEngineName(), filename, Integer.valueOf(resp.getProperty("version")));
+
+    Map<String,String> metadata = Map.of(
+      "publicKeyValue", keys.getPublicKey().encodeToBase64()
+    );
+
+    return new GeneratedKeyPair(keyPair, metadata);
+
   }
 }

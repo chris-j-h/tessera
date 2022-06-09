@@ -11,6 +11,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+
+import com.quorum.tessera.key.vault.SetSecretResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +30,7 @@ public class AWSSecretManagerKeyGenerator implements KeyGenerator {
   }
 
   @Override
-  public AWSKeyPair generate(
+  public GeneratedKeyPair generate(
       String filename, ArgonOptions encryptionOptions, KeyVaultOptions keyVaultOptions) {
     final KeyPair keys = this.encryptor.generateNewKeys();
 
@@ -50,15 +53,24 @@ public class AWSSecretManagerKeyGenerator implements KeyGenerator {
     publicId.append("Pub");
     privateId.append("Key");
 
-    saveKeyInSecretManager(publicId.toString(), keys.getPublicKey());
-    saveKeyInSecretManager(privateId.toString(), keys.getPrivateKey());
+    SetSecretResponse pubResp = saveKeyInSecretManager(publicId.toString(), keys.getPublicKey());
+    SetSecretResponse privResp = saveKeyInSecretManager(privateId.toString(), keys.getPrivateKey());
 
-    return new AWSKeyPair(publicId.toString(), privateId.toString());
+    AWSKeyPair keyPair = new AWSKeyPair(publicId.toString(), privateId.toString());
+
+    Map<String,String> metadata = Map.of(
+      "publicKeyValue", keys.getPublicKey().encodeToBase64(),
+      "publicKeyName", pubResp.getProperty("name"),
+      "privateKeyName", privResp.getProperty("name")
+    );
+
+    return new GeneratedKeyPair(keyPair, metadata);
   }
 
-  private void saveKeyInSecretManager(String id, Key key) {
-    keyVaultService.setSecret(Map.of("secretName", id, "secret", key.encodeToBase64()));
+  private SetSecretResponse saveKeyInSecretManager(String id, Key key) {
+    SetSecretResponse resp = keyVaultService.setSecret(Map.of("secretName", id, "secret", key.encodeToBase64()));
     LOGGER.debug("Key {} saved to vault with id {}", key.encodeToBase64(), id);
-    LOGGER.info("Key saved to vault with id {}", id);
+//    LOGGER.info("Key saved to vault with id {}", id);
+    return resp;
   }
 }

@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.Map;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +47,7 @@ public class FileKeyGenerator implements KeyGenerator {
   }
 
   @Override
-  public FilesystemKeyPair generate(
+  public GeneratedKeyPair generate(
       final String filename,
       final ArgonOptions encryptionOptions,
       final KeyVaultOptions keyVaultOptions) {
@@ -116,6 +117,12 @@ public class FileKeyGenerator implements KeyGenerator {
 
     keyPair.withPassword(password);
 
-    return keyPair;
+    Map<String,String> metadata = Map.of(
+      "publicKeyValue", publicKeyBase64,
+      "publicKeyPath", publicKeyPath.toAbsolutePath().toString(),
+      "privateKeyPath", publicKeyPath.toAbsolutePath().toString()
+    );
+
+    return new GeneratedKeyPair(keyPair, metadata);
   }
 }
