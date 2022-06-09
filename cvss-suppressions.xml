@@ -24,4 +24,12 @@
         <packageUrl regex="true">^pkg:maven/com\.h2database/h2@.*$</packageUrl>
         <cve>CVE-2018-14335</cve>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: spring-beans-5.3.20.jar, and other spring jars
+   Not applicable to how Spring libraries are used within hashicorp-key-vault module
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-.*$</packageUrl>
+        <cve>CVE-2016-1000027</cve>
+    </suppress>
 </suppressions>
