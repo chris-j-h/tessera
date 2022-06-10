@@ -230,9 +230,7 @@ public class KeyGenCommand implements Callable<CliResult> {
             .map(name -> keyGenerator.generate(name, argonOptions, keyVaultOptions))
             .collect(Collectors.toList());
 
-    LOGGER.info("CHRISSY generated keys, writing output");
     output(generatedKeyPairs);
-    LOGGER.info("CHRISSY generated keys, wrote output");
 
     final List<char[]> newPasswords =
         generatedKeyPairs.stream()
