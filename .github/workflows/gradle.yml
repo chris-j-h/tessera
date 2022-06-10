@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+      - security-advisories
 env:
   GRADLE_CACHE_KEY: ${{ github.run_id }}-gradle-${{ github.run_number }}-${{ github.run_number }}-${{ github.sha }}
   DIST_TAR: tessera-dist/build/distributions/tessera-*.tar
