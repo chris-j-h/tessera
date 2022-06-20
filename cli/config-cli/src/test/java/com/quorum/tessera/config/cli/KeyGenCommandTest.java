@@ -98,7 +98,6 @@ public class KeyGenCommandTest {
     assertThat(result.getConfig()).isNotPresent();
     assertThat(result.getStatus()).isEqualTo(0);
 
-    verify(keyDataMarshaller).marshal(configKeyPair);
     verify(keyGeneratorFactory).create(refEq(null), any(EncryptorConfig.class));
 
     verify(keyGenerator).generate("", null, null);
@@ -214,7 +213,6 @@ public class KeyGenCommandTest {
       assertThat(result.getStatus()).isEqualTo(0);
     }
 
-    verify(keyDataMarshaller, times(optionVariations.size())).marshal(configKeyPair);
     verify(keyGeneratorFactory, times(optionVariations.size()))
         .create(refEq(null), any(EncryptorConfig.class));
 
@@ -256,8 +254,6 @@ public class KeyGenCommandTest {
       assertThat(result.getConfig()).isNotPresent();
     }
 
-    verify(keyDataMarshaller, times(optionVariations.size() * valueVariations.size()))
-        .marshal(configKeyPair);
     verify(keyGeneratorFactory, times(optionVariations.size()))
         .create(refEq(null), any(EncryptorConfig.class));
 
@@ -330,7 +326,6 @@ public class KeyGenCommandTest {
     assertThat(executionExceptionHandler.getExceptions()).isEmpty();
     verify(keyGenerator).generate("", null, null);
     verify(keyGeneratorFactory).create(any(AzureKeyVaultConfig.class), any(EncryptorConfig.class));
-    verify(keyDataMarshaller).marshal(configKeyPair);
   }
 
   @Test
