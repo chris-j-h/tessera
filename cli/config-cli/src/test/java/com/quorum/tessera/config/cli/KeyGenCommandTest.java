@@ -338,6 +338,11 @@ public class KeyGenCommandTest {
     // given
     when(keyGeneratorFactory.create(eq(null), any(EncryptorConfig.class))).thenReturn(keyGenerator);
 
+    GeneratedKeyPair gkp = mock(GeneratedKeyPair.class);
+    ConfigKeyPair configKeyPair = mock(ConfigKeyPair.class);
+    when(gkp.getConfigKeyPair()).thenReturn(configKeyPair);
+    when(keyGenerator.generate("", null, null)).thenReturn(gkp);
+
     CommandLine commandLine = new CommandLine(keyGenCommand);
 
     Config config = mock(Config.class);
@@ -349,18 +354,9 @@ public class KeyGenCommandTest {
 
     commandLine.registerConverter(Config.class, configConverter);
 
-    int exceptionExitCode = 999;
-    List<Exception> exceptions = new ArrayList<>();
-    commandLine.setExecutionExceptionHandler(
-        (ex, cmd, parseResult) -> {
-          exceptions.add(ex);
-          return exceptionExitCode;
-        });
-
     int exitCode = commandLine.execute("--configfile=myconfig.file");
 
     assertThat(exitCode).isZero();
-    assertThat(exceptions).isEmpty();
     verify(configConverter).convert("myconfig.file");
 
     CliResult result = commandLine.getExecutionResult();
@@ -373,7 +369,7 @@ public class KeyGenCommandTest {
 
     verify(configFileUpdaterWriter).updateAndWriteToCLI(anyList(), eq(null), any(Config.class));
 
-    verify(keyDataMarshaller).marshal(null);
+    verify(keyDataMarshaller).marshal(configKeyPair);
 
     verify(keyGenerator).generate("", null, null);
   }
@@ -422,7 +418,14 @@ public class KeyGenCommandTest {
 
   @Test
   public void hashicorpKeyOutDefinedRaises() throws Exception {
-    when(keyGeneratorFactory.create(any(), any())).thenReturn(mock(KeyGenerator.class));
+    when(keyGeneratorFactory.create(any(), any())).thenReturn(keyGenerator);
+
+    String keyout = "key.out";
+
+    GeneratedKeyPair gkp = mock(GeneratedKeyPair.class);
+    ConfigKeyPair configKeyPair = mock(ConfigKeyPair.class);
+    when(gkp.getConfigKeyPair()).thenReturn(configKeyPair);
+    when(keyGenerator.generate(keyout, null, null)).thenReturn(gkp);
 
     Config config = mock(Config.class);
     KeyConfiguration keyConfiguration = mock(KeyConfiguration.class);
@@ -432,12 +435,11 @@ public class KeyGenCommandTest {
     CommandLine commandLine = new CommandLine(keyGenCommand);
     commandLine.setExecutionExceptionHandler(executionExceptionHandler);
     commandLine.registerConverter(Config.class, value -> config);
-    String keyout = "key.out";
     int result =
         commandLine.execute(
             "--vault.type=HASHICORP",
             "--vault.url=someurl",
-            "--configfile=".concat(keyout),
+            "--configfile=".concat("myconfig.json"),
             "--keyout=".concat(keyout));
 
     executionExceptionHandler.getExceptions().forEach(Throwable::printStackTrace);
@@ -446,6 +448,7 @@ public class KeyGenCommandTest {
     assertThat(result).isZero();
 
     verify(keyGeneratorFactory).create(any(), any());
+    verify(keyGenerator).generate(keyout, null, null);
     verify(configFileUpdaterWriter).updateAndWriteToCLI(anyList(), any(), refEq(config));
     verify(keyDataMarshaller).marshal(any());
   }
