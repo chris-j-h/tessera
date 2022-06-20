@@ -244,8 +244,6 @@ public class KeyGenCommand implements Callable<CliResult> {
       return new CliResult(0, true, null);
     }
 
-    // TODO(cjh) - move out, review (e.g. should it take ConfigKeyPairs instead of KeyData?
-
     // prepare config for addition of new keys if required
     prepareConfigForNewKeys(fileUpdateOptions.getConfig());
 
@@ -264,7 +262,6 @@ public class KeyGenCommand implements Callable<CliResult> {
       configFileUpdaterWriter.updateAndWriteToCLI(
           newKeyData, keyVaultConfig, fileUpdateOptions.getConfig());
     }
-    // end TODO(cjh)
 
     return new CliResult(0, true, fileUpdateOptions.getConfig());
   }
