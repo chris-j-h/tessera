@@ -743,8 +743,7 @@ public class PicoCliDelegateTest {
     GeneratedKeyPair gkp = mock(GeneratedKeyPair.class);
     when(gkp.getConfigKeyPair()).thenReturn(ckp);
 
-    when(keyGenerator.generate(anyString(), eq(null), eq(null)))
-        .thenReturn(gkp);
+    when(keyGenerator.generate(anyString(), eq(null), eq(null))).thenReturn(gkp);
 
     final CliResult cliResult = cliDelegate.execute("-keygen", "--encryptor.type", "NACL");
 
