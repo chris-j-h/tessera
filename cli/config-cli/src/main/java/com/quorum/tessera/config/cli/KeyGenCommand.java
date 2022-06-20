@@ -129,11 +129,11 @@ public class KeyGenCommand implements Callable<CliResult> {
 
         sj.add(String.format("\t%d: type=%s, pub=%s", i, type, pubKey));
         sj.add(
-          String.format(
-            "\t\tpub: name=%s/%s, id=%s, version=%s", secretEngine, name, pubId, version));
+            String.format(
+                "\t\tpub: name=%s/%s, id=%s, version=%s", secretEngine, name, pubId, version));
         sj.add(
-          String.format(
-            "\t\tprv: name=%s/%s, id=%s, version=%s", secretEngine, name, privId, version));
+            String.format(
+                "\t\tprv: name=%s/%s, id=%s, version=%s", secretEngine, name, privId, version));
       } else if (kp.getConfigKeyPair() instanceof FilesystemKeyPair) {
         FilesystemKeyPair fkp = (FilesystemKeyPair) kp.getConfigKeyPair();
         String type = "file";
@@ -146,7 +146,7 @@ public class KeyGenCommand implements Callable<CliResult> {
         sj.add(String.format("\t\tprv: path=%s", privPath));
       } else {
         sj.add(
-          String.format("\t%d: type=unknown, pub=%s", i, kp.getConfigKeyPair().getPublicKey()));
+            String.format("\t%d: type=unknown, pub=%s", i, kp.getConfigKeyPair().getPublicKey()));
       }
     }
     System.out.println(sj);
@@ -206,7 +206,8 @@ public class KeyGenCommand implements Callable<CliResult> {
         }
       }
 
-      final Set<ConstraintViolation<KeyVaultConfig>> violations = validator.validate(keyVaultConfig);
+      final Set<ConstraintViolation<KeyVaultConfig>> violations =
+          validator.validate(keyVaultConfig);
       if (!violations.isEmpty()) {
         throw new ConstraintViolationException(violations);
       }

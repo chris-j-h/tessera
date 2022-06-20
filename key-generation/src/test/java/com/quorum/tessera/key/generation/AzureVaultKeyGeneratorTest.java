@@ -14,6 +14,8 @@ import com.quorum.tessera.key.vault.KeyVaultService;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
 import java.util.Map;
+
+import com.quorum.tessera.key.vault.SetSecretResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -47,7 +49,14 @@ public class AzureVaultKeyGeneratorTest {
     final String pubVaultId = vaultId + "Pub";
     final String privVaultId = vaultId + "Key";
 
-    final AzureVaultKeyPair result = azureVaultKeyGenerator.generate(vaultId, null, null);
+    final String pubVersion = "pubVersion";
+    final String privVersion = "privVersion";
+
+    final SetSecretResponse setRespPub = new SetSecretResponse(Map.of("version", pubVersion));
+    final SetSecretResponse setRespPriv = new SetSecretResponse(Map.of("version", privVersion));
+    when(keyVaultService.setSecret(anyMap())).thenReturn(setRespPub, setRespPriv);
+
+    final GeneratedKeyPair result = azureVaultKeyGenerator.generate(vaultId, null, null);
 
     final ArgumentCaptor<Map> captor = ArgumentCaptor.forClass(Map.class);
 
@@ -68,9 +77,10 @@ public class AzureVaultKeyGeneratorTest {
 
     verifyNoMoreInteractions(keyVaultService);
 
-    final AzureVaultKeyPair expected = new AzureVaultKeyPair(pubVaultId, privVaultId, null, null);
+    final AzureVaultKeyPair kp = new AzureVaultKeyPair(pubVaultId, privVaultId, pubVersion, privVersion);
+    final GeneratedKeyPair expected = new GeneratedKeyPair(kp, pub.encodeToBase64());
 
-    assertThat(result).isEqualToComparingFieldByFieldRecursively(expected);
+    assertThat(result).usingRecursiveComparison().isEqualTo(expected);
   }
 
   @Test

@@ -9,6 +9,8 @@ import com.quorum.tessera.key.vault.SetSecretResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +50,10 @@ public class HashicorpVaultKeyGenerator implements KeyGenerator {
     setSecretData.put("secretEngineName", keyVaultOptions.getSecretEngineName());
 
     SetSecretResponse resp = keyVaultService.setSecret(setSecretData);
+    Integer version = Optional.ofNullable(resp)
+      .map(r -> r.getProperty("version"))
+      .map(Integer::valueOf)
+      .orElse(0);
 
     LOGGER.debug(
         "Key saved to vault secret engine {} with name {} and id {}",
@@ -67,7 +73,7 @@ public class HashicorpVaultKeyGenerator implements KeyGenerator {
             privId,
             keyVaultOptions.getSecretEngineName(),
             filename,
-            Integer.valueOf(resp.getProperty("version")));
+            version);
 
     return new GeneratedKeyPair(keyPair, keys.getPublicKey().encodeToBase64());
   }
