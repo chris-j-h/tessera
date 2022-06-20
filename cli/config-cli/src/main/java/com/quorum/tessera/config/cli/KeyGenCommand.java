@@ -89,9 +89,7 @@ public class KeyGenCommand implements Callable<CliResult> {
   }
 
   static void output(List<GeneratedKeyPair> generatedKeyPairs) {
-
     StringJoiner sj = new StringJoiner("\n");
-
     sj.add(String.format("%d keypair(s) generated:", generatedKeyPairs.size()));
 
     int i = 0;
@@ -131,11 +129,11 @@ public class KeyGenCommand implements Callable<CliResult> {
 
         sj.add(String.format("\t%d: type=%s, pub=%s", i, type, pubKey));
         sj.add(
-            String.format(
-                "\t\tpub: name=%s/%s, id=%s, version=%s", secretEngine, name, pubId, version));
+          String.format(
+            "\t\tpub: name=%s/%s, id=%s, version=%s", secretEngine, name, pubId, version));
         sj.add(
-            String.format(
-                "\t\tprv: name=%s/%s, id=%s, version=%s", secretEngine, name, privId, version));
+          String.format(
+            "\t\tprv: name=%s/%s, id=%s, version=%s", secretEngine, name, privId, version));
       } else if (kp.getConfigKeyPair() instanceof FilesystemKeyPair) {
         FilesystemKeyPair fkp = (FilesystemKeyPair) kp.getConfigKeyPair();
         String type = "file";
@@ -148,7 +146,7 @@ public class KeyGenCommand implements Callable<CliResult> {
         sj.add(String.format("\t\tprv: path=%s", privPath));
       } else {
         sj.add(
-            String.format("\t%d: type=unknown, pub=%s", i, kp.getConfigKeyPair().getPublicKey()));
+          String.format("\t%d: type=unknown, pub=%s", i, kp.getConfigKeyPair().getPublicKey()));
       }
     }
     System.out.println(sj);
@@ -198,20 +196,17 @@ public class KeyGenCommand implements Callable<CliResult> {
               .flatMap(c -> c.getKeyVaultConfig(keyVaultConfigOptions.getVaultType()))
               .orElse(null);
     } else {
-
       final KeyVaultHandler keyVaultHandler = new DispatchingKeyVaultHandler();
       keyVaultConfig = keyVaultHandler.handle(keyVaultConfigOptions);
 
       if (keyVaultConfig.getKeyVaultType() == KeyVaultType.HASHICORP) {
-
         if (Objects.isNull(keyOut)) {
           throw new CliException(
               "At least one -filename must be provided when saving generated keys in a Hashicorp Vault");
         }
       }
 
-      final Set<ConstraintViolation<KeyVaultConfig>> violations =
-          validator.validate(keyVaultConfig);
+      final Set<ConstraintViolation<KeyVaultConfig>> violations = validator.validate(keyVaultConfig);
       if (!violations.isEmpty()) {
         throw new ConstraintViolationException(violations);
       }
