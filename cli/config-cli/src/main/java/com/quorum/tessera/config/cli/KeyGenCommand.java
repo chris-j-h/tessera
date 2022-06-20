@@ -235,15 +235,15 @@ public class KeyGenCommand implements Callable<CliResult> {
             .map(ConfigKeyPair::getPassword)
             .collect(Collectors.toList());
 
+    if (Objects.isNull(fileUpdateOptions)) {
+      return new CliResult(0, true, null);
+    }
+
     final List<KeyData> newKeyData =
         generatedKeyPairs.stream()
             .map(GeneratedKeyPair::getConfigKeyPair)
             .map(keyDataMarshaller::marshal)
             .collect(Collectors.toList());
-
-    if (Objects.isNull(fileUpdateOptions)) {
-      return new CliResult(0, true, null);
-    }
 
     // prepare config for addition of new keys if required
     prepareConfigForNewKeys(fileUpdateOptions.getConfig());

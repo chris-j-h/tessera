@@ -10,6 +10,7 @@ import com.quorum.tessera.cli.CliResult;
 import com.quorum.tessera.config.Config;
 import com.quorum.tessera.config.KeyDataConfig;
 import com.quorum.tessera.config.Peer;
+import com.quorum.tessera.config.keypairs.ConfigKeyPair;
 import com.quorum.tessera.config.keypairs.FilesystemKeyPair;
 import com.quorum.tessera.config.keys.KeyEncryptor;
 import com.quorum.tessera.config.util.JaxbUtil;
@@ -269,8 +270,12 @@ public class PicoCliDelegateTest {
   @Test
   public void keygen() throws Exception {
 
-    GeneratedKeyPair keypair = mock(GeneratedKeyPair.class);
-    when(keyGenerator.generate(anyString(), eq(null), eq(null))).thenReturn(keypair);
+    ConfigKeyPair ckp = mock(ConfigKeyPair.class);
+    when(ckp.getPublicKey()).thenReturn("mypub");
+    GeneratedKeyPair gkp = mock(GeneratedKeyPair.class);
+    when(gkp.getConfigKeyPair()).thenReturn(ckp);
+
+    when(keyGenerator.generate(anyString(), eq(null), eq(null))).thenReturn(gkp);
 
     CliResult result = cliDelegate.execute("-keygen", "-filename", UUID.randomUUID().toString());
 
@@ -284,8 +289,12 @@ public class PicoCliDelegateTest {
 
   @Test
   public void keygenThenExit() throws Exception {
-    GeneratedKeyPair keypair = mock(GeneratedKeyPair.class);
-    when(keyGenerator.generate(anyString(), eq(null), eq(null))).thenReturn(keypair);
+    ConfigKeyPair ckp = mock(ConfigKeyPair.class);
+    when(ckp.getPublicKey()).thenReturn("mypub");
+    GeneratedKeyPair gkp = mock(GeneratedKeyPair.class);
+    when(gkp.getConfigKeyPair()).thenReturn(ckp);
+
+    when(keyGenerator.generate(anyString(), eq(null), eq(null))).thenReturn(gkp);
 
     final CliResult result = cliDelegate.execute("-keygen", "--encryptor.type", "NACL");
 
@@ -729,8 +738,13 @@ public class PicoCliDelegateTest {
   @Test
   public void suppressStartupForKeygenOption() throws Exception {
 
+    ConfigKeyPair ckp = mock(ConfigKeyPair.class);
+    when(ckp.getPublicKey()).thenReturn("mypub");
+    GeneratedKeyPair gkp = mock(GeneratedKeyPair.class);
+    when(gkp.getConfigKeyPair()).thenReturn(ckp);
+
     when(keyGenerator.generate(anyString(), eq(null), eq(null)))
-        .thenReturn(mock(GeneratedKeyPair.class));
+        .thenReturn(gkp);
 
     final CliResult cliResult = cliDelegate.execute("-keygen", "--encryptor.type", "NACL");
 
