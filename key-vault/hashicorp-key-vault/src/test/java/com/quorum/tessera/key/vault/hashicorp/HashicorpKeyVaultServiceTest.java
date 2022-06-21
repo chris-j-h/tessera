@@ -3,9 +3,8 @@ package com.quorum.tessera.key.vault.hashicorp;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.Map;
-
 import com.quorum.tessera.key.vault.SetSecretResponse;
+import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
