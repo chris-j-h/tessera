@@ -18,7 +18,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -485,16 +484,17 @@ public class KeyGenCommandTest {
     when(aws.getPublicKeyId()).thenReturn("myPub");
     when(aws.getPrivateKeyId()).thenReturn("myPriv");
 
+    // cover cases where a new key pair gets implemented and output code is not yet updated
     UnknownKeyPair unknown = mock(UnknownKeyPair.class);
     when(unknown.getPublicKey()).thenReturn("unknownPub");
 
-    List<GeneratedKeyPair> kps = List.of(
-      new GeneratedKeyPair(file, "filePub"),
-      new GeneratedKeyPair(hashi, "hashiPub"),
-      new GeneratedKeyPair(azure, "azurePub"),
-      new GeneratedKeyPair(aws, "awsPub"),
-      new GeneratedKeyPair(unknown, "unknownPub")
-    );
+    List<GeneratedKeyPair> kps =
+        List.of(
+            new GeneratedKeyPair(file, "filePub"),
+            new GeneratedKeyPair(hashi, "hashiPub"),
+            new GeneratedKeyPair(azure, "azurePub"),
+            new GeneratedKeyPair(aws, "awsPub"),
+            new GeneratedKeyPair(unknown, "unknownPub"));
     KeyGenCommand.output(kps);
 
     String got = systemOutOutput.getLog();
@@ -538,9 +538,7 @@ public class KeyGenCommandTest {
     }
 
     @Override
-    public void withPassword(char[] password) {
-
-    }
+    public void withPassword(char[] password) {}
 
     @Override
     public char[] getPassword() {
