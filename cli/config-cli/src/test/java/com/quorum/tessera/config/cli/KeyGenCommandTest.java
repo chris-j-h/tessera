@@ -7,7 +7,7 @@ import com.quorum.tessera.cli.CLIExceptionCapturer;
 import com.quorum.tessera.cli.CliException;
 import com.quorum.tessera.cli.CliResult;
 import com.quorum.tessera.config.*;
-import com.quorum.tessera.config.keypairs.ConfigKeyPair;
+import com.quorum.tessera.config.keypairs.*;
 import com.quorum.tessera.config.util.ConfigFileUpdaterWriter;
 import com.quorum.tessera.config.util.PasswordFileUpdaterWriter;
 import com.quorum.tessera.key.generation.GeneratedKeyPair;
@@ -17,9 +17,13 @@ import jakarta.validation.ConstraintViolationException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
+
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -28,6 +32,8 @@ import picocli.CommandLine;
 
 @RunWith(MockitoJUnitRunner.class)
 public class KeyGenCommandTest {
+
+  @Rule public SystemOutRule systemOutOutput = new SystemOutRule().enableLog();
 
   @Captor protected ArgumentCaptor<CommandLine.ParameterException> parameterExceptionArgumentCaptor;
   private KeyGeneratorFactory keyGeneratorFactory;
@@ -454,6 +460,92 @@ public class KeyGenCommandTest {
     KeyGenCommand.prepareConfigForNewKeys(config);
     assertThat(config.getKeys()).isNotNull();
     assertThat(config.getKeys().getKeyData()).isEmpty();
+  }
+
+  @Test
+  public void output() {
+    FilesystemKeyPair file = mock(FilesystemKeyPair.class);
+    when(file.getPublicKeyPath()).thenReturn(Paths.get("/file.pub"));
+    when(file.getPrivateKeyPath()).thenReturn(Paths.get("/file.key"));
+
+    HashicorpVaultKeyPair hashi = mock(HashicorpVaultKeyPair.class);
+    when(hashi.getSecretEngineName()).thenReturn("kv");
+    when(hashi.getSecretName()).thenReturn("mySecret");
+    when(hashi.getPublicKeyId()).thenReturn("publicKey");
+    when(hashi.getPrivateKeyId()).thenReturn("privateKey");
+    when(hashi.getSecretVersion()).thenReturn(1);
+
+    AzureVaultKeyPair azure = mock(AzureVaultKeyPair.class);
+    when(azure.getPublicKeyId()).thenReturn("myPub");
+    when(azure.getPrivateKeyId()).thenReturn("myPriv");
+    when(azure.getPublicKeyVersion()).thenReturn("abc123");
+    when(azure.getPrivateKeyVersion()).thenReturn("def456");
+
+    AWSKeyPair aws = mock(AWSKeyPair.class);
+    when(aws.getPublicKeyId()).thenReturn("myPub");
+    when(aws.getPrivateKeyId()).thenReturn("myPriv");
+
+    UnknownKeyPair unknown = mock(UnknownKeyPair.class);
+    when(unknown.getPublicKey()).thenReturn("unknownPub");
+
+    List<GeneratedKeyPair> kps = List.of(
+      new GeneratedKeyPair(file, "filePub"),
+      new GeneratedKeyPair(hashi, "hashiPub"),
+      new GeneratedKeyPair(azure, "azurePub"),
+      new GeneratedKeyPair(aws, "awsPub"),
+      new GeneratedKeyPair(unknown, "unknownPub")
+    );
+    KeyGenCommand.output(kps);
+
+    String got = systemOutOutput.getLog();
+
+    StringJoiner sj = new StringJoiner("\n");
+    sj.add("5 keypair(s) generated:");
+
+    sj.add("\t1: type=file, pub=filePub");
+    sj.add("\t\tpub: path=/file.pub");
+    sj.add("\t\tprv: path=/file.key");
+
+    sj.add("\t2: type=hashicorp, pub=hashiPub");
+    sj.add("\t\tpub: name=kv/mySecret, id=publicKey, version=1");
+    sj.add("\t\tprv: name=kv/mySecret, id=privateKey, version=1");
+
+    sj.add("\t3: type=azure, pub=azurePub");
+    sj.add("\t\tpub: id=myPub, version=abc123");
+    sj.add("\t\tprv: id=myPriv, version=def456");
+
+    sj.add("\t4: type=aws, pub=awsPub");
+    sj.add("\t\tpub: id=myPub");
+    sj.add("\t\tprv: id=myPriv");
+
+    sj.add("\t5: type=unknown, pub=unknownPub");
+
+    String expected = sj.toString();
+
+    assertThat(got).contains(expected);
+  }
+
+  static class UnknownKeyPair implements ConfigKeyPair {
+
+    @Override
+    public String getPublicKey() {
+      return null;
+    }
+
+    @Override
+    public String getPrivateKey() {
+      return null;
+    }
+
+    @Override
+    public void withPassword(char[] password) {
+
+    }
+
+    @Override
+    public char[] getPassword() {
+      return new char[0];
+    }
   }
 
   static class CliExecutionExceptionHandler implements CommandLine.IExecutionExceptionHandler {
